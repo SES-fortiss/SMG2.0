@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.6" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true">  
+  <class id="1" language="java" name="org.fortiss.smg.analyzer.impl.pattern.ClassifierSingle" project="analyzer.impl" 
+    file="/analyzer.impl/src/main/java/org/fortiss/smg/analyzer/impl/pattern/ClassifierSingle.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="261" width="358" x="209" y="335"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="org.fortiss.smg.analyzer.impl.pattern.ClassifierAll" project="analyzer.impl" 
+    file="/analyzer.impl/src/main/java/org/fortiss/smg/analyzer/impl/pattern/ClassifierAll.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="189" width="341" x="607" y="335"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="org.fortiss.smg.analyzer.impl.pattern.Interpolate" project="analyzer.impl" 
+    file="/analyzer.impl/src/main/java/org/fortiss/smg/analyzer/impl/pattern/Interpolate.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="261" width="426" x="34" y="-2"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="org.fortiss.smg.analyzer.impl.pattern.Classifier" project="analyzer.impl" 
+    file="/analyzer.impl/src/main/java/org/fortiss/smg/analyzer/impl/pattern/Classifier.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="297" width="433" x="500" y="-2"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <association id="5">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="6" name="general"/>      
+      <multiplicity id="7" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="8">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <generalization id="9">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

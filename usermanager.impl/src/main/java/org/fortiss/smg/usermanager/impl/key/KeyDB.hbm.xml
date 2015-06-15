@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.fortiss.smartmicrogrid.keymanager.models.KeyDB"
+		table="app_keys">
+		<id name="publicKey" type="string" column="publicKey">
+			<generator class="uuid" />
+		</id>
+
+		<property name="privateKey">
+			<column name="privateKey" />
+		</property>
+		
+		<property name="userId">
+			<column name="userId" />
+		</property>
+		<property name="devId">
+			<column name="devId" />
+		</property>
+
+		<property name="lastSeen" type="timestamp">
+			<column name="lastSeen" />
+		</property>
+		
+		<property name="devName">
+			<column name="devName" />
+		</property>
+		
+		<property name="macAddress">
+			<column name="macAddress" />
+		</property>
+		
+	</class>
+</hibernate-mapping>

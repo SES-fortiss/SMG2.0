@@ -1,0 +1,6 @@
+in order to use the actuatorclient.hexabus some modifications must be done on the hexabus raspberry basestation.
+* intall lighttpd (or any other webserver) incl. php support, listen port 8080
+* copy the schalter.php file to the webserver docs root
+* make a softlink of the devicetree.json ln -s /home/hexanode/node_modules/hexanode-webfrontend/devicetree.json to the webserver docs root
+* copy the devicecontroller.sh to /home/hexanode/devicecontroller.sh
+

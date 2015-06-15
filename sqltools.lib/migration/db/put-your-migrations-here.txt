@@ -1,0 +1,7 @@
+The have to be named in a special way.
+
+For the whole convention, please look up in the wiki ;-)
+
+at the moment
+
+V<versionnumber>_<tablename>_<description of the action>.sql

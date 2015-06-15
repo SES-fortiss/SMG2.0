@@ -1,0 +1,145 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+		<groupId>org.fortiss.smartmicrogrid</groupId>
+		<artifactId>smartmicrogrid</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+    <artifactId>rulesystem.impl</artifactId>
+
+	<packaging>bundle</packaging>
+<!-- drools plugins -->
+		 <dependencies>
+		   	<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-api</artifactId>
+			<version>6.1.0.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-core</artifactId>
+			<version>6.1.0.Final</version>
+		</dependency>
+   		<dependency>
+     		<groupId>org.drools</groupId>
+     		<artifactId>drools-compiler</artifactId>
+     		<version>6.1.0.Final</version>
+     		<scope>runtime</scope>
+   		</dependency>
+   		<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-internal</artifactId>
+			<version>6.1.0.Final</version>
+		</dependency>
+  <!-- drools plugins -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>rulesystem.api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    	<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>ambulance.api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>remoteframework.lib</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		       <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>actuatormaster.api</artifactId>
+        	<version>1.0-SNAPSHOT</version>
+        	<scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>sqltools.lib</artifactId>
+        	<version>1.0-SNAPSHOT</version>
+        	<scope>provided</scope>
+        </dependency>
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>containermanager.api</artifactId>
+        	<version>1.0-SNAPSHOT</version>
+        	<scope>provided</scope>
+        </dependency>
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>informationbroker.api</artifactId>
+        	<version>1.0-SNAPSHOT</version>
+        	<scope>provided</scope>
+        </dependency>
+		 </dependencies>
+
+    <build>
+    <!-- to add xml and DRL file in META-INF of reference libraries -->
+    <resources>
+			<resource>
+				<directory>src/main/resources</directory>
+					<includes>
+						<include>kmodule.xml</include>
+					</includes>
+					<targetPath>META-INF</targetPath>
+			</resource> 
+		</resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.name}</Bundle-SymbolicName>
+                        <Bundle-Activator>org.fortiss.smg.rulesystem.impl.RuleSystemActivator</Bundle-Activator>
+                        <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                        <Embed-Directory>OSGI-INF/lib</Embed-Directory>
+                        <Embed-Transitive>true</Embed-Transitive>
+						<Export-Package>
+								org.fortiss.smg.rulesystem.impl
+						</Export-Package>
+                        <Import-Package>
+                            *;resolution:=optional
+                            </Import-Package>
+                    </instructions>
+                </configuration>
+           </plugin>
+            
+             <!-- to access external resources
+            <plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+					<version>2.4</version>
+					<executions>
+ 						<execution>
+  							<id>copy-dev-resources</id>
+ 							<phase>process-resources</phase>
+  							<goals>
+   								<goal>copy-resources</goal>
+							</goals>
+  							<configuration>
+  								<overwrite>true</overwrite>
+							<outputDirectory>${basedir}/target</outputDirectory>							
+  							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+								</resource> </resources>
+ 						</configuration>
+						</execution>
+					</executions>
+			</plugin>
+			 -->
+        </plugins>
+    </build>
+</project>
+

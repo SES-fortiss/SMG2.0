@@ -1,0 +1,51 @@
+package org.fortiss.smg.rulesystem.impl
+
+import org.fortiss.smg.rulesystem.impl.Message;
+import org.fortiss.smg.rulesystem.impl.Events;
+
+
+global org.slf4j.Logger logger;
+/*global IActuatorMaster master;*/
+
+ 
+dialect "mvel"
+
+/*
+declare Message
+	status: int
+	message : String
+end */
+
+
+declare Events
+	origin : String 
+	value: double
+	maxAbsError : double
+	devid: String	
+end
+
+
+/* rule "Rule Message_Hello"
+ when
+ 	 Message( status: Message.HELLO, myMessage : message )
+ 	 eval (status == 0)
+ then
+ 	 System.out.println( "Rule Message_Hello :: output :: " myMessage  );
+ end*/
+ 
+
+rule "Rule Event_container" 
+when 
+	Events( origin == "solarlog.wrapper.solar_generator_watt", val : value > 10)
+then 
+	 System.out.println( "Rule Event_container :: output ::"+val); 
+end 
+
+
+rule "RuleInterface Event_container" 
+ when 
+	Events( containerId : origin,  val : value)
+	 eval (val == 4.0) 
+then 
+	 System.out.println( "RuleInterface Event_container :: output ::" + val ); 
+end 

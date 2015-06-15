@@ -1,0 +1,203 @@
+package org.fortiss.smg.informationbroker.impl.persistency;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.Date;
+
+import org.fortiss.smg.actuatormaster.api.IActuatorListener;
+import org.fortiss.smg.actuatormaster.api.events.DeviceEvent;
+import org.fortiss.smg.actuatormaster.api.events.DoubleEvent;
+import org.fortiss.smg.containermanager.api.devices.DeviceContainer;
+import org.fortiss.smg.containermanager.api.devices.DeviceId;
+import org.fortiss.smg.informationbroker.api.DoublePoint;
+import org.fortiss.smg.informationbroker.impl.cache.CacheKey;
+import org.fortiss.smg.informationbroker.impl.cache.LocalCacheManager;
+import org.slf4j.Logger;
+
+public class PersistencyLog implements IActuatorListener {
+
+	private Logger logger;
+
+	private PersistencyDBUtil dbUtil;
+
+	private LocalCacheManager localCacheManager;
+
+	/**
+	 * Constructor of Persistency-Logging-Component
+	 * 
+	 * @param dbUtil
+	 * @param localCacheManager
+	 * @param logger2
+	 */
+
+	public PersistencyLog(PersistencyDBUtil dbUtil,
+			LocalCacheManager localCacheManager, Logger logger) {
+		this.dbUtil = dbUtil;
+		this.localCacheManager = localCacheManager;
+		this.logger = logger;
+	}
+
+	/**
+	 * Synchronized Method to close db-connection in dbUtil
+	 */
+	public synchronized void closeDBConnetion() {
+		dbUtil.closeDBConnetion();
+	}
+
+	/**
+	 * Receive newDeviceEvents and save to database
+	
+	public void newDeviceEvent(String newDevOrigin, DeviceSpec spec) {
+		// TODO SpecId not saved into database - add once necessary!
+		logger.debug("PersistencyLog: received new newDevice event. logging to Database.");
+		if (dbUtil.checkOrOpenDBConnection()) {
+			try {
+				PreparedStatement query = dbUtil.getCon().prepareStatement(
+						"INSERT INTO DeviceEvent_Table(origin) VALUES(?)");
+				query.setString(1, newDevOrigin);
+				query.executeUpdate();
+				query.close();
+				logger.debug("PersistencyLog: DB Query " + query);
+			} catch (SQLException e) {
+				closeDBConnetion();
+				logger.warn("PersistencyLog: SQL Statement error", e);
+			}
+		} else {
+			logger.error("PersistencyLog: Event discarded: newDeviceEvent({})",
+					newDevOrigin);
+		}
+	}
+	 */
+
+
+
+
+
+	private String translateDateToSQLTimeStamp(Date d) {
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+				"yyyy-MM-dd HH:mm:ss");
+		return sdf.format(d);
+	}
+
+	@Override
+	public void onDoubleEventReceived(DoubleEvent ev, DeviceId dev,
+			String client) {
+
+	
+		logger.debug("received new double event. storing in Cache");
+		DoublePoint point = new DoublePoint(ev.getValue(), ev.getMaxAbsError(),
+				new Date().getTime());
+
+		localCacheManager.doubleCache.store(new CacheKey(dev.getDevid(),
+				dev.getWrapperId()), point);
+	
+		logger.debug("received new double event. logging to Database");
+		if (dbUtil.checkOrOpenDBConnection()) {
+			
+			/*try {
+				PreparedStatement duplicate = dbUtil
+						.getCon()
+						.prepareStatement(
+								"SELECT * FROM DoubleEvent_Table WHERE timestamp = ? AND origin = ? AND unit = ?");
+				duplicate.setString(1, translateDateToSQLTimeStamp(new Date()));
+				duplicate.setString(2, origin);
+				duplicate.setString(3, unit.toString());
+				ResultSet rs = duplicate.executeQuery();
+
+				if (!rs.isFirst()) {
+
+					duplicate.close();
+*/
+			try{
+					PreparedStatement query = dbUtil
+							.getCon()
+							.prepareStatement(
+									"INSERT INTO DoubleEvents(devid,wrapperid,value,maxAbsError, timestamp) VALUES(?,?,?,?,?)");
+					query.setString(1, dev.getDevid());
+					query.setString(2, dev.getWrapperId());
+					query.setDouble(3, ev.getValue());
+					if (Double.isNaN(ev.getMaxAbsError())) {
+						query.setNull(4, Types.DOUBLE);
+					} else {
+						query.setDouble(4, Double.isNaN(ev.getMaxAbsError()) ? null
+								: ev.getMaxAbsError());
+					}
+					query.setLong(5, point.getTime());
+					query.executeUpdate();
+					logger.debug("PersistencyLog: DB Query " + query);
+					logger.debug("received new double event. logging to Database "
+							+ dev + "Val: "+ev.getValue() );
+					query.close();
+			/*	} else {
+
+					duplicate.close();
+				}
+		*/
+			} catch (SQLException e) {
+				closeDBConnetion();
+				logger.warn("SQL Statement error", e);
+			}
+		} else {
+			logger.error("Event discarded: doubleEvent({},{})",
+					dev, ev.getValue());
+		}
+		
+		/*
+		 * try transbase too
+		 */
+		/*	
+		logger.debug("storing in Transbase");
+		if (dbUtil.checkOrOpenTransbaseDBConnection()) {
+			
+			
+			try{
+					
+					PreparedStatement query = dbUtil
+							.getTransbaseCon()
+							.prepareStatement(
+									"INSERT INTO DoubleEvents(\"devid\",\"wrapperid\",\"value\",\"maxAbsError\",\"timestamp\") VALUES(?,?,?,?,?)");
+					query.setString(1, dev.getDevid());
+					query.setString(2, dev.getWrapperId());
+					query.setDouble(3, ev.getValue());
+					if (Double.isNaN(ev.getMaxAbsError())) {
+						query.setNull(4, Types.DOUBLE);
+					} else {
+						query.setDouble(4, Double.isNaN(ev.getMaxAbsError()) ? null
+								: ev.getMaxAbsError());
+					}
+					query.setLong(5, point.getTime());
+					query.executeUpdate();
+					logger.debug("PersistencyLog: Transbase DB Query " + query);
+					logger.debug("received new double event. logging to Transbase Database "
+							+ dev + "Val: "+ev.getValue() );
+					query.close();
+			} catch (SQLException e) {
+				dbUtil.closeTransbaseDBConnetion();
+				logger.warn("SQL Statement error", e);
+			}
+			
+		} else {
+			logger.error("Event discarded: doubleEvent({},{})",
+					dev, ev.getValue());
+		}
+		// Transbase end
+		*/
+	}
+	
+	
+	@Override
+	public void onDeviceEventReceived(DeviceEvent ev, DeviceId dev,
+			String client) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDeviceEventReceived(DeviceContainer ev, String client) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

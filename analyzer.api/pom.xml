@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.fortiss.smartmicrogrid</groupId>
+    <artifactId>smartmicrogrid</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>analyzer.api</artifactId>
+  <packaging>bundle</packaging>
+
+  <dependencies>
+  
+  <dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>smg.schemas</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+
+  
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>ambulance.api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>containermanager.api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.fortiss.smartmicrogrid</groupId>
+			<artifactId>informationbroker.api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.fortiss.smartmicrogrid</groupId>
+			<artifactId>webrest.api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.4.1</version>
+		</dependency>
+
+
+
+		
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.name}</Bundle-SymbolicName>
+            <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+			<Embed-Directory>OSGI-INF/lib</Embed-Directory>
+			<Embed-Transitive>true</Embed-Transitive>
+			<Import-Package>
+				*;resolution:=optional
+			</Import-Package>
+            <Export-Package>
+            	org.fortiss.smg.analyzer.api,
+                org.fortiss.smg.analyzer.api.dto,
+                
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

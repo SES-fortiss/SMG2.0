@@ -1,0 +1,383 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.fortiss.smartmicrogrid </groupId>
+	<artifactId>smartmicrogrid</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<exam.version>4.4.0</exam.version>
+		<url.version>1.5.2</url.version>
+	</properties>
+
+	<!-- yeah define the global dependency of ops4j for logging -->
+	<dependencies>
+		<!-- <dependency> <groupId>org.ops4j.pax.logging</groupId> <artifactId>pax-logging-api</artifactId> 
+			<version>1.7.1</version> <scope>provided</scope> </dependency> <dependency> 
+			<groupId>org.ops4j.pax.logging</groupId> <artifactId>pax-logging-service</artifactId> 
+			<version>1.7.1</version> <scope>provided</scope> </dependency> -->
+		<!-- For sane logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
+		<!-- GSON for all -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.4.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.4.2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.4.2</version>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
+
+	<profiles>
+		<profile>
+			<id>test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.ops4j</groupId>
+						<artifactId>maven-pax-plugin</artifactId>
+						<version>1.5</version>
+						<configuration>
+							<!-- Pax Runner version -->
+							<runner>1.8.5</runner>
+							<!-- OSGi framework type (equinox, felix, knopflerfish) -->
+							<framework>felix</framework>
+							<ee>JavaSE-1.7</ee>
+
+							<provision>
+								<param>--log=debug</param>
+								<param>--profiles=log,core,compendium,obr,gogo,felix.webconsole</param>
+								<param>--workingDirectory=target/runner</param>
+								<param>--vmOptions=-Dlog4j.configuration=file:///${basedir}/configs/logging.cfg</param>
+								<param>--Dbundles.configuration.location=foo</param>
+
+								<!-- bundles that should be installed -->
+								<!-- <param>mvn:org.ops4j.pax.confman/pax-confman-propsloader/0.2.3@3</param> -->
+
+
+							</provision>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>normal</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<!-- Experimental setting -->
+					<plugin>
+						<groupId>org.ops4j</groupId>
+						<artifactId>maven-pax-plugin</artifactId>
+						<version>1.5</version>
+						<configuration>
+							<!-- Pax Runner version -->
+							<runner>1.8.5</runner>
+							<!-- OSGi framework type (equinox, felix, knopflerfish) -->
+							<framework>felix</framework>
+							<ee>JavaSE-1.7</ee>
+
+							<provision>
+								<param>--log=debug</param>
+
+								<param>--workingDirectory=target/runner</param>
+								<param>--vmOptions=-Dlog4j.configuration=file:///${basedir}/configs/logging.cfg
+									-Dsql.loc=mysql://localhost:3306/fortiss2
+									-Doldsql.loc=mysql://localhost:3306/fortiss
+									-Dsql.user=fortiss
+									-Dsql.pass=foo</param>
+
+
+								<param>--Dbundles.configuration.location=foo</param>
+
+
+								<!-- bundles that should be installed -->
+								<!-- <param>mvn:org.ops4j.pax.confman/pax-confman-propsloader/0.2.3@3</param> -->
+								<param>mvn:org.ops4j.pax.logging/pax-logging-service/1.7.1@3</param>
+								<param>mvn:org.ops4j.pax.logging/pax-logging-api/1.7.1@3</param>
+
+							</provision>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>docs</id>
+
+			<build>
+
+				<plugins>
+					<!-- attach javadoc automatically = mvn clean javadoc:jar install -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+
+	<build>
+
+
+		<plugins>
+			<!-- Use maven plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+
+
+			<!-- Config for unit testing -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.16</version>
+				<configuration>
+					<includes>
+						<include>**/Test*.java</include>
+					</includes>
+					<parallel>classes</parallel>
+					<threadCount>10</threadCount>
+				</configuration>
+			</plugin>
+
+			<!-- Dependency analyzer * download everything: mvn dependency:copy * 
+				see the tree: mvn dependency:tree -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<artifactItems>
+						<artifactItem>
+							<groupId>[ groupId ]</groupId>
+							<artifactId>[ artifactId ]</artifactId>
+							<version>[ version ]</version>
+							<type>[ packaging ]</type>
+							<classifier> [classifier - optional] </classifier>
+							<overWrite>[ true or false ]</overWrite>
+							<outputDirectory>lib</outputDirectory>
+							<destFileName>[ filename ]</destFileName>
+						</artifactItem>
+					</artifactItems>
+					<!-- other configurations here -->
+				</configuration>
+			</plugin>
+
+			<!-- attach sources automatically to every deployed maven jar same as 
+				the both variants: mvn clean javadoc:jar source:jar install mvn clean install 
+				-DperformRelease=true -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<attach>true</attach>
+				</configuration>
+			</plugin>
+
+
+
+
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<version>2.3.7</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+
+
+	</build>
+
+	<modules>
+		<module>remoteframework.lib</module>
+		<module>remoteframework.test</module>
+
+		<module>config.lib</module>
+		<module>sqltools.lib</module>
+		<module>smg.schemas</module>
+
+		<module>ambulance.api</module>
+		<module>ambulance.impl</module>
+		<module>ambulance.test</module>
+
+		<module>actuatormaster.api</module>
+		<module>actuatormaster.impl</module>
+		<module>actuatormaster.test</module>
+
+		<module>informationbroker.api</module>
+		<module>informationbroker.impl</module>
+		<module>informationbroker.test</module>
+
+		<module>containermanager.api</module>
+		<module>containermanager.impl</module>
+		<module>containermanager.test</module>
+
+		<module>usermanager.api</module>
+		<module>usermanager.impl</module>
+		<module>usermanager.test</module>
+
+		<module>test.mocker</module>
+
+		<module>actuatorclient.arduino.impl</module>
+		<module>actuatorclient.arduino.test</module>
+
+		<module>actuatorclient.sunny.impl</module>
+		<module>actuatorclient.sunny.test</module>
+
+		<module>actuatorclient.solarlog.impl</module>
+		<module>actuatorclient.solarlog.test</module>
+
+		<module>actuatorclient.siemens.impl</module>
+		<module>actuatorclient.siemens.test</module>
+
+		<module>actuatorclient.labcon.impl</module>
+		<module>actuatorclient.labcon.test</module>
+
+
+		<module>actuatorclient.ipswitch.impl</module>
+		<module>actuatorclient.ipswitch.test</module>
+
+		<module>actuatorclient.hexabus.impl</module>
+		<module>actuatorclient.hexabus.test</module>
+
+		<module>actuatorclient.froeschl.impl</module>
+		<module>actuatorclient.froeschl.test</module>
+
+		<module>actuatorclient.enocean.impl</module>
+		<module>actuatorclient.enocean.test</module>
+
+		<!-- <module>actuatorclient.smartphoneserver.impl</module> <module>actuatorclient.smartphoneserver.test</module> -->
+
+		<module>postman.api</module>
+		<module>postman.impl</module>
+		<module>postman.test</module>
+
+		<module>optimizer.api</module>
+		<module>optimizer.impl</module>
+		<module>optimizer.test</module>
+
+		<module>rulesystem.api</module>
+		<module>rulesystem.impl</module>
+		<module>rulesystem.test</module>
+
+		<module>gamification.api</module>
+		<module>gamification.impl</module>
+		<module>gamification.test</module>
+
+		<module>analyzer.api</module>
+		<module>analyzer.impl</module>
+		<module>analyzer.test</module>
+
+		<module>prophet.api</module>
+		<module>prophet.impl</module>
+		<module>prophet.test</module>
+
+		<!-- <module>meterpush.api</module> <module>meterpush.impl</module> <module>meterpush.test</module> -->
+
+		<module>trader.api</module>
+		<module>trader.impl</module>
+		<module>trader.test</module>
+
+		<module>webrest.api</module>
+		<module>webrest.impl</module>
+		<module>webrest.test</module>
+
+		<module>websocket.api</module>
+		<module>websocket.impl</module>
+		<module>websocket.test</module>
+
+	</modules>
+
+
+	<!-- used for deployment -->
+	<distributionManagement>
+		<repository>
+			<id>nexus</id>
+			<name>Internal Releases</name>
+			<url>http://localhost:8081/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus</id>
+			<name>Internal Releases</name>
+			<url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+
+</project>
+

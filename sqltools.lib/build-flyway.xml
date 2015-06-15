@@ -1,0 +1,48 @@
+<project name="foobar" default="migrate-db.prod" xmlns:flyway="antlib:com.googlecode.flyway.ant">
+    <target name="migrate-db.prod">
+        <taskdef uri="antlib:com.googlecode.flyway.ant"
+                 resource="com/googlecode/flyway/ant/antlib.xml">
+            <classpath>
+                <pathelement location="./migration/libs/flyway-core-2.1.1.jar"/>
+                <pathelement location="./migration/libs/flyway-ant-2.1.1.jar"/>
+            </classpath>
+        </taskdef>
+
+        <path id="flyway.classpath">
+            <fileset dir="./migration/libs" includes="mysql-connector-java-5.1.24-bin.jar"/>
+        </path>
+        <property name="flyway.locations" value="filesystem:./migration/db"/>
+
+		
+		<property name="flyway.sqlMigrationPrefix" value="V" />
+		<property name="flyway.sqlMigrationSuffix" value=".sql" />
+
+    	<!-- change this to get flyway working right -->
+        <flyway:migrate url="jdbc:mysql://localhost:3306/fortiss" user="fortiss"  password="foo"  />
+    </target>
+	
+	  <target name="migrate-db.test">
+	        <taskdef uri="antlib:com.googlecode.flyway.ant"
+	                 resource="com/googlecode/flyway/ant/antlib.xml">
+	            <classpath>
+	                <pathelement location="./migration/libs/flyway-core-2.1.1.jar"/>
+	                <pathelement location="./migration/libs/flyway-ant-2.1.1.jar"/>
+	            </classpath>
+	        </taskdef>
+
+	        <path id="flyway.classpath">
+	            <fileset dir="./migration/libs" includes="mysql-connector-java-5.1.24-bin.jar"/>
+	        </path>
+	        <property name="flyway.locations" value="filesystem:./migration/db"/>
+
+			
+			<property name="flyway.sqlMigrationPrefix" value="V" />
+			<property name="flyway.sqlMigrationSuffix" value=".sql" />
+
+	    	<!-- change this to get flyway working right -->
+	        <flyway:migrate url="jdbc:mysql://localhost:3306/fortissTest" user="fortissTest"  password="test"  />
+	    </target>
+	
+	
+	<target name="migrate-all" depends="migrate-db.prod, migrate-db.test" />
+</project>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smgconfig>
+<general>
+	<allowmultiple>false</allowmultiple>
+</general>
+<wrapperlist>
+<wrapper>
+	<key>siemens</key>
+	<wrapperid>siemens211.wrapper</wrapperid>
+	<wrappername>smg-client-siemens-211</wrappername>
+	<protocol>http</protocol>
+	<host>192.168.21.211</host>
+	<port>8081</port>
+	<path></path>
+	<username>admin</username>
+	<password>secret</password>
+	<pollingfrequency>10</pollingfrequency>
+</wrapper>
+<wrapper>
+	<key>siemens</key>
+	<wrapperid>siemens212.wrapper</wrapperid>
+	<wrappername>smg-client-siemens-212</wrappername>
+	<protocol>http</protocol>
+	<host>192.168.21.212</host>
+	<port>8081</port>
+	<path></path>
+	<username>admin</username>
+	<password>secret</password>
+	<pollingfrequency>10</pollingfrequency>
+	<connectedDevicesList>13,12,124</connectedDevicesList>
+</wrapper>
+<wrapper>
+	<key>froeschl</key>
+	<wrapperid>froeschl.wrapper</wrapperid>
+	<wrappername>smg-client-froeschl</wrappername>
+	<protocol>http</protocol>
+	<host>192.168.21.214</host>
+	<port>80</port>
+	<path>GetMeasuredValue.cgi</path>
+	<username></username>
+	<password></password>
+	<pollingfrequency>10</pollingfrequency>
+</wrapper>
+<wrapper>
+	<key>labcon</key>
+	<wrapperid>labcon.wrapper</wrapperid>
+	<wrappername>smg-client-labcon</wrappername>
+	<protocol>http</protocol>
+	<host>192.168.21.201</host>
+	<port>80</port>
+	<path></path>
+	<username>admin</username>
+	<password>admin</password>
+	<pollingfrequency>10</pollingfrequency>
+</wrapper>
+<wrapper>
+	<key>solarlog</key>
+	<wrapperid>solarlog.wrapper</wrapperid>
+	<wrappername>smg-client-solarlog</wrappername>
+	<protocol>http</protocol>
+	<host>192.168.21.202</host>
+	<port>80</port>
+	<path></path>
+	<username></username>
+	<password></password>
+	<pollingfrequency>10</pollingfrequency>
+</wrapper>
+<wrapper>
+	<key>sunny</key>
+	<wrapperid>sunny.wrapper</wrapperid>
+	<wrappername>smg-client-sunny</wrappername>
+	<protocol>http</protocol>
+	<host>192.168.21.203</host>
+	<port>80</port>
+	<path></path>
+	<username></username>
+	<password></password>
+	<pollingfrequency>10</pollingfrequency>
+</wrapper>
+<wrapper>
+	<key>hexabus</key>
+	<wrapperid>hexabus.wrapper</wrapperid>
+	<wrappername>smg-client-hexabus</wrappername>
+	<protocol>http</protocol>
+	<host>192.168.21.217</host>
+	<port>8080</port>
+	<path>devicetree.json</path>
+	<username></username>
+	<password></password>
+	<pollingfrequency>10</pollingfrequency>
+</wrapper>
+<wrapper>
+	<key>ipswitch</key>
+	<wrapperid>ipswitch.wrapper</wrapperid>
+	<wrappername>smg-client-ipswitch</wrappername>
+	<protocol>http</protocol>
+	<host>192.168.21.209</host>
+	<port>8080</port>
+	<path>cnt.html</path>
+	<username></username>
+	<password></password>
+	<pollingfrequency>10</pollingfrequency>
+</wrapper>
+<wrapper>
+	<key>arduino</key>
+	<wrapperid>adroino_nano.wrapper</wrapperid>
+	<wrappername>smg-client-adroino_nano</wrappername>
+	<protocol>ethernet</protocol>
+	<host>192.168.0.2</host>
+	<port>80</port>
+	<path></path>
+	<username></username>
+	<password></password>
+	<pollingfrequency>1</pollingfrequency>
+	<subdevices>
+		<subdevice>
+			<devicecode>12</devicecode>
+			<threshold>2</threshold>
+			<pin>A1</pin>
+		</subdevice>
+		<subdevice>
+			<devicecode>13</devicecode>
+			<threshold>20</threshold>
+			<pin>A1</pin>
+		</subdevice>
+		<subdevice>
+			<devicecode>0</devicecode>
+			<threshold>0</threshold>
+			<pin>2</pin>
+		</subdevice>
+		<subdevice>
+			<devicecode>0</devicecode>
+			<threshold>0</threshold>
+			<pin>3</pin>
+		</subdevice>
+	</subdevices>
+</wrapper>
+<wrapper>
+	<key>enocean</key>
+	<wrapperid>enocean.wrapper</wrapperid>
+	<wrappername>smg-client-enocean</wrappername>
+	<protocol>http</protocol>
+	<host>192.168.21.208</host>
+	<port>3775</port>
+	<path></path>
+	<username></username>
+	<password></password>
+	<pollingfrequency>10</pollingfrequency>
+</wrapper>
+<wrapper>
+	<key>smartphoneserver</key>
+	<wrapperid>smartphoneserver.wrapper</wrapperid>
+	<wrappername>smg-client-smartphoneserver-1</wrappername>
+	<protocol>Bluetooth</protocol>
+	<host></host>
+	<port></port>
+	<path></path>
+	<username></username>
+	<password></password>
+	<pollingfrequency>0</pollingfrequency>
+</wrapper>
+<wrapper>
+	<key>smartphoneserver</key>
+	<wrapperid>smartphoneserver.wrapper</wrapperid>
+	<wrappername>smg-client-smartphoneserver-2</wrappername>
+	<protocol>Bluetooth</protocol>
+	<host></host>
+	<port></port>
+	<path></path>
+	<username></username>
+	<password></password>
+	<pollingfrequency>0</pollingfrequency>
+</wrapper>
+<wrapper>
+	<key>smartphoneserver</key>
+	<wrapperid>smartphoneserver.wrapper</wrapperid>
+	<wrappername>smg-client-smartphoneserver-2</wrappername>
+	<protocol>Bluetooth</protocol>
+	<host></host>
+	<port></port>
+	<path></path>
+	<username></username>
+	<password></password>
+	<pollingfrequency>0</pollingfrequency>
+</wrapper>
+</wrapperlist>
+</smgconfig>
