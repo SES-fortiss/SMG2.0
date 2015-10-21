@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor;
 
 import java.util.Collection;
@@ -65,7 +57,9 @@ public class SystestActorStrategy extends ActorStrategy {
 			if (execute)
 				communicator.sendTelegram(telegram);
 
-			DeviceId origin = impl.getDeviceSpecs().get(0).getDeviceId();
+//			DeviceId origin = impl.getDeviceSpecs().get(0).getDeviceId();
+			DeviceId origin = actor.getDeviceId();
+			logger.debug(actor.getDeviceId().toString()+ " In Actor SystemActor class");
 			DoubleEvent ev = new DoubleEvent(valueDbl);
             impl.getMaster().sendDoubleEvent(ev, origin,impl.getClientId() );
             logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + valueDbl );

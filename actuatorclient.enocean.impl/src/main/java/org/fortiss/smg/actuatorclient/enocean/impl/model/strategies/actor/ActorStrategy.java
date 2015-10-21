@@ -1,23 +1,13 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor;
 
 import java.util.Collection;
-
-
-
 
 
 //import org.fortiss.smartmicrogrid.shared.EventHandler;
 import org.fortiss.smg.actuatormaster.api.events.DoubleEvent;
 import org.fortiss.smg.actuatormaster.api.events.DeviceEvent;
 import org.fortiss.smg.websocket.api.shared.schema.DeviceSpec;
+import org.fortiss.smg.containermanager.api.devices.DeviceId;
 //import org.fortiss.smartmicrogrid.shared.schema.SIUnitType;
 import org.fortiss.smg.containermanager.api.devices.SIUnitType;
 import org.fortiss.smg.actuatorclient.enocean.impl.ActuatorClientImpl;
@@ -31,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import teachintelegraminfo.TeachInTelegramInfo;
 
-//import org.fortiss.smartmicrogrid.wrapper.generic.NotSupportedException;
 
 public abstract class ActorStrategy  extends AbstractImpl  {
 	private static final Logger logger = LoggerFactory.getLogger(ActorStrategy.class);
@@ -102,6 +91,7 @@ public abstract class ActorStrategy  extends AbstractImpl  {
 	public void startStrategy() {
 		// TODO Auto-generated method stub	
 	}
+
 
 
 }

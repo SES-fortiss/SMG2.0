@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor;
 
 import java.util.ArrayList;
@@ -62,21 +54,23 @@ public class FWZ12SensorStrategy extends SensorStrategy {
 			if (isEnergyReading(telegram)) {
 				realValue *= 100d;
 			}
-			int count = 0;
-			String id = telegram.getIdString();
-			List<DeviceId> devices = new ArrayList<DeviceId>();
-			devices.add(impl.getDeviceSpecs().get(31).getDeviceId());
-			devices.add(impl.getDeviceSpecs().get(32).getDeviceId());
-			devices.add(impl.getDeviceSpecs().get(33).getDeviceId());
-			devices.add(impl.getDeviceSpecs().get(34).getDeviceId());
-			
-			for (DeviceId deviceId : devices) {
-				if(deviceId.toString().contains(id))
-					break;
-				count++;
-			}
-			DeviceId origin = devices.get(count);			
-			
+//			int count = 0;
+//			String id = telegram.getIdString();
+//			List<DeviceId> devices = new ArrayList<DeviceId>();
+//			devices.add(impl.getDeviceSpecs().get(31).getDeviceId());
+//			devices.add(impl.getDeviceSpecs().get(32).getDeviceId());
+//			devices.add(impl.getDeviceSpecs().get(33).getDeviceId());
+//			devices.add(impl.getDeviceSpecs().get(34).getDeviceId());
+//			
+//			for (DeviceId deviceId : devices) {
+//				if(deviceId.toString().contains(id))
+//					break;
+//				count++;
+//			}
+//			DeviceId origin = devices.get(count);			
+//			
+			DeviceId origin = sensor.getDeviceId();
+			logger.debug(sensor.getDeviceId().toString()+ " In Sensor FWZ12 class");
 			DoubleEvent ev = new DoubleEvent(realValue);
             impl.getMaster().sendDoubleEvent(ev, origin,impl.getClientId());
             logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + realValue );

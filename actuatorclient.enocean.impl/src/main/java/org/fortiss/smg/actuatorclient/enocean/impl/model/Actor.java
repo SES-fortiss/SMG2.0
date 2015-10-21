@@ -1,13 +1,6 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model;
 
+import org.fortiss.smg.containermanager.api.devices.DeviceId;
 import org.fortiss.smg.containermanager.api.devices.SIUnitType;
 import org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.ActorStrategy;
 
@@ -16,19 +9,25 @@ public class Actor {
 	private int channel;
 
 	private ActorStrategy strategy;
-
+	private DeviceId deviceId;
 	private String id;
 
-	public Actor(int channel, ActorStrategy strategy) {
+	public Actor(int channel, ActorStrategy strategy , DeviceId deviceId ) {
 		this.channel = channel;
 		this.strategy = strategy;
 		this.strategy.setActor(this);
+		this.deviceId = deviceId;
 	}
 
 	public int getChannel() {
 		return this.channel;
 	}
 
+	public DeviceId getDeviceId() {
+		return this.deviceId;
+	}
+
+	
 	/**
 	 * Every COMMAND to an Actuator is redirected to it's strategy! See
 	 * Strategies for Actuator-functionality

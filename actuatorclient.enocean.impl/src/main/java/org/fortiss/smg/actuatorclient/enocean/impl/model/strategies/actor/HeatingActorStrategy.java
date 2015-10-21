@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor;
 
 import java.util.ArrayList;
@@ -78,7 +70,9 @@ public class HeatingActorStrategy extends ActorStrategy {
 
 			sendTelegram((char) 0x00, getTempChar0x00(REF_TEMP),getTempChar40x00(getActTemp(valueDbl, REF_TEMP, HYSTERESIS)), (char) 0x0F, (char) 0x30);
 			
-			DeviceId origin = impl.getDeviceSpecs().get(0).getDeviceId();
+//			DeviceId origin = impl.getDeviceSpecs().get(0).getDeviceId();
+			DeviceId origin = actor.getDeviceId();
+			System.out.println(actor.getDeviceId().toString()+"In Actor Heating class");
 			DoubleEvent ev = new DoubleEvent(valueDbl);
             impl.getMaster().sendDoubleEvent(ev, origin,impl.getClientId() );
             logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + valueDbl );
@@ -117,7 +111,9 @@ public class HeatingActorStrategy extends ActorStrategy {
 			// difference = hysteresis -> 100% | difference 0 -> 0%
 			value = Math.max(0.0, Math.min(100.0, value));
 			
-			DeviceId origin = impl.getDeviceSpecs().get(0).getDeviceId();
+//			DeviceId origin = impl.getDeviceSpecs().get(0).getDeviceId();
+			DeviceId origin = actor.getDeviceId();
+			logger.debug(actor.getDeviceId().toString()+"In Actor Heating Class");
 			DoubleEvent ev = new DoubleEvent(value);
             impl.getMaster().sendDoubleEvent(ev, origin,impl.getClientId() );
             logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + value );

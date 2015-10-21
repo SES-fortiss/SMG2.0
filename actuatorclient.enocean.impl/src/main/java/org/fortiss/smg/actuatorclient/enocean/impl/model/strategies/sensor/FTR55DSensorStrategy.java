@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor;
 
 import java.util.ArrayList;
@@ -70,18 +62,20 @@ public class FTR55DSensorStrategy extends SensorStrategy {
 		    		break;
 		    	}
 		    }
-			List<DeviceId> devices = new ArrayList<DeviceId>();
-		    
-			devices.add(impl.getDeviceSpecs().get(28).getDeviceId());
-			devices.add(impl.getDeviceSpecs().get(30).getDeviceId());
-			devices.add(impl.getDeviceSpecs().get(35).getDeviceId());
-			
-			for (DeviceId deviceId : devices) {
-				if(deviceId.toString().contains(id))
-					break;
-				count++;
-			}
-			DeviceId origin = devices.get(count);
+//			List<DeviceId> devices = new ArrayList<DeviceId>();
+//		    
+//			devices.add(impl.getDeviceSpecs().get(28).getDeviceId());
+//			devices.add(impl.getDeviceSpecs().get(30).getDeviceId());
+//			devices.add(impl.getDeviceSpecs().get(35).getDeviceId());
+//			
+//			for (DeviceId deviceId : devices) {
+//				if(deviceId.toString().contains(id))
+//					break;
+//				count++;
+//			}
+//			DeviceId origin = devices.get(count);
+			DeviceId origin = sensor.getDeviceId();
+			logger.debug(sensor.getDeviceId().toString()+ " In Sensor FTR55D class");
 			//Actual Temperature
 			int actTempByte = telegram.getDataByte(1);
 			double actualTemp =  (40 - actTempByte * 40/256.0);

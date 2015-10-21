@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor;
 
 import java.util.Map;
@@ -43,8 +35,9 @@ public class FT4SingleRockerStrategy extends SensorStrategy {
 		}
 		
 		try{
-		DeviceId origin = impl.getDeviceSpecs().get(26).getDeviceId();
-		
+//		DeviceId origin = impl.getDeviceSpecs().get(26).getDeviceId();
+			DeviceId origin = sensor.getDeviceId();
+			logger.debug(sensor.getDeviceId().toString()+ " In Sensor FT4 class");
 		logger.debug("Received telegram: {}", telegram);
 		if (telegram.getOrg().equals(EnOceanOrigin.EEP_RPS) && telegram.getDataByte(3) == 0x50) {
 			DoubleEvent ev = new DoubleEvent(0.0);
@@ -57,13 +50,13 @@ public class FT4SingleRockerStrategy extends SensorStrategy {
 	        logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + 1.0 );
 //			getEventHandler().booleanEvent(sensor.getId(), true);
 		} else if (telegram.getOrg().equals(EnOceanOrigin.EEP_RPS) && telegram.getDataByte(3) == 0x10) {
-			origin = impl.getDeviceSpecs().get(27).getDeviceId();
+//			origin = impl.getDeviceSpecs().get(27).getDeviceId();
 			DoubleEvent ev = new DoubleEvent(0.0);
 	        impl.getMaster().sendDoubleEvent(ev, origin,impl.getClientId());
 	        logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + 0.0 );
 //			getEventHandler().booleanEvent(sensor.getId(), false);
 		} else if (telegram.getOrg().equals(EnOceanOrigin.EEP_RPS) && telegram.getDataByte(3) == 0x30) {
-			origin = impl.getDeviceSpecs().get(27).getDeviceId();
+//			origin = impl.getDeviceSpecs().get(27).getDeviceId();
 			DoubleEvent ev = new DoubleEvent(1.0);
 	        impl.getMaster().sendDoubleEvent(ev, origin,impl.getClientId());
 	        logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + 1.0 );

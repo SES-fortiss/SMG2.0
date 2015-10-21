@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor;
 
 import java.util.Collection;
@@ -67,7 +59,9 @@ public class OurHardcodedActorStrategy extends ActorStrategy {
 		
 		if (execute)
 			communicator.sendTelegram(telegram);
-		DeviceId origin = impl.getDeviceSpecs().get(4).getDeviceId();
+//		DeviceId origin = impl.getDeviceSpecs().get(4).getDeviceId();
+		DeviceId origin = actor.getDeviceId();
+		logger.debug(actor.getDeviceId().toString()+ " In Actor OurHardcoded Devices class");
 		Double value = 0.0;
 		if (valueBool)
 			value = 1.0;
@@ -92,7 +86,8 @@ public class OurHardcodedActorStrategy extends ActorStrategy {
 		if (execute)
 			communicator.sendTelegram(telegram);
 		
-		DeviceId origin = impl.getDeviceSpecs().get(4).getDeviceId();
+//		DeviceId origin = impl.getDeviceSpecs().get(4).getDeviceId();
+		DeviceId origin = actor.getDeviceId();
 		DoubleEvent ev = new DoubleEvent(valueDbl);
 		impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
 		logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + valueDbl );
@@ -114,7 +109,9 @@ public class OurHardcodedActorStrategy extends ActorStrategy {
 		if (execute)
 			communicator.sendTelegram(telegram);
 		
-		DeviceId origin = impl.getDeviceSpecs().get(4).getDeviceId();
+//		DeviceId origin = impl.getDeviceSpecs().get(4).getDeviceId();
+		DeviceId origin = actor.getDeviceId();
+		logger.debug(actor.getDeviceId().toString()+ " In Actor OurHardcoded Devices class");
 		DoubleEvent ev = new DoubleEvent(Integer.parseInt(valueStr));
 		impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
 		logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + valueStr );

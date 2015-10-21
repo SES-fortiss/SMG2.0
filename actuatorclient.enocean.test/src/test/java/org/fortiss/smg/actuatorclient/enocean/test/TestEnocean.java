@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.test;
 
 import static org.junit.Assert.fail;
@@ -24,6 +16,7 @@ import org.fortiss.smg.actuatorclient.enocean.impl.EnOceanLooper;
 import org.fortiss.smg.actuatormaster.api.ActuatorMasterQueueNames;
 import org.fortiss.smg.actuatormaster.api.IActuatorMaster;
 import org.fortiss.smg.actuatormaster.impl.ActuatorMasterActivator;
+import org.fortiss.smg.containermanager.api.devices.DeviceId;
 import org.fortiss.smg.containermanager.impl.ContainerManagerActivator;
 import org.fortiss.smg.informationbroker.api.InformationBrokerInterface;
 import org.fortiss.smg.informationbroker.api.InformationBrokerQueueNames;
@@ -72,14 +65,10 @@ public class TestEnocean {
 				System.out.println( ": Unable to connect to master (Timeout).");
 			}
 		
-		impl = new ActuatorClientImpl(master, "enocean-1", "USB" , 3775, "enocean.wrapper", 10);
-		
-		//broker);
-		
-		//impl.activate();
-		
+//		impl = new ActuatorClientImpl(master, "enocean-1", "USB" , 3775, "enocean.wrapper", 10);
+						
+		impl.activate();
 				
-		
 		logger.info("ActuatorClient[enocean] is alive");
 		
 		impl.connectToEncoean();
@@ -88,15 +77,16 @@ public class TestEnocean {
 		
 		//ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 		//executor.scheduleAtFixedRate(looper, 0,1, TimeUnit.SECONDS);
-		
-			}
+		}
 
 	@Test
 	public void testOnDeviceEventReceivedDeviceContainerString() throws InterruptedException {
-		looper.setBoolean(false, "office5070light", 0, "enocean", true);
+				
+		DeviceId devid = new DeviceId("31","office5070light");
+		looper.setBoolean(true, devid.toString(), 0, "enocean", true);
 		Thread.sleep(1000);
-		looper.setBoolean(true, "office5070light", 0, "enocean", true);
-		Thread.sleep(150000);
+		looper.setBoolean(false, devid.toString(), 0, "enocean", true);
+		Thread.sleep(1000);
 		fail("Not yet implemented");
 	}
 

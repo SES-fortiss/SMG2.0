@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor;
 
 import java.util.ArrayList;
@@ -15,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 
 import java.util.concurrent.TimeoutException;
+
 
 
 //import org.fortiss.smartmicrogrid.shared.builders.devspecbuilder.DeviceSpecBuilder;
@@ -85,7 +78,9 @@ public class GenericPushRelease1030SwitchActorStrategy extends ActorStrategy {
 			communicator.sendTelegram(telegram);
 		} //otherwise change state without executing (external connection)
 		try{
-		DeviceId origin = impl.getDeviceSpecs().get(1).getDeviceId();
+//		DeviceId origin = impl.getDeviceSpecs().get(1).getDeviceId();
+		DeviceId origin = actor.getDeviceId();
+		logger.debug(actor.getDeviceId().toString()+"In Actor Generic class");
 		Double value = 0.0;
 		if (valueBool)
 			value = 1.0;

@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor;
 
 import java.util.Map;
@@ -46,7 +38,9 @@ public class BSCsOTSSensorStrategy extends SensorStrategy {
 			int tempByte = telegram.getDataByte(1);
 			double actualTemp =  (60.0 - tempByte*80.0/255.0);
 			//Accuracy 0.8Kelvin
-			DeviceId origin = impl.getDeviceSpecs().get(8).getDeviceId();
+//			DeviceId origin = impl.getDeviceSpecs().get(8).getDeviceId();
+			DeviceId origin = sensor.getDeviceId();
+			logger.debug(sensor.getDeviceId().toString()+ " In Sensor BSCTS class");
 			DoubleEvent ev = new DoubleEvent(actualTemp);
             impl.getMaster().sendDoubleEvent(ev, origin,impl.getClientId());
             logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + actualTemp );

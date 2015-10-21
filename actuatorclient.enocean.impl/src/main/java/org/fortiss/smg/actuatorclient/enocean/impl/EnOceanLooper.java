@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl;
 
 import java.io.IOException;
@@ -38,7 +30,7 @@ public class EnOceanLooper implements EnOceanTelegramHandler , Runnable{
 	private static final Logger logger = LoggerFactory.getLogger(EnOceanLooper.class);
 	private EnOceanCommunicator communicator;
 	private Map<String, Sensor> idSensorMap;
-	private Map<String, Actor> internatlIdActorMap = new HashMap<String, Actor>();
+	private Map<String, Actor> idActorMap = new HashMap<String, Actor>();
 	
 	private ActuatorClientImpl impl;
 	// Used for CONFIGURATION
@@ -138,7 +130,7 @@ public void handleIncomingTelegram(UniversalTelegram telegram) {
     if (telegram == null) {
         return;
     }
-    logger.debug("received telegram: " + telegram.getTelegramString() + " (" + telegram + ")");
+    logger.debug("received telegram: " + telegram.getTelegramString() + " (" + telegram + ") " + telegram.getIdString());
     String id = telegram.getIdString();
     
     String idWithZeros = id;
@@ -154,15 +146,23 @@ public void handleIncomingTelegram(UniversalTelegram telegram) {
     
     List<DeviceContainer> devices = new ArrayList<DeviceContainer>();
     devices = impl.getDeviceSpecs();
+    
     // Apparently we look here if the device id is already known
     for (DeviceContainer device : devices) {
-    	
 		if(device.getDeviceId().toString().contains(id)){
-			if (getIdSensorMap().get(idWithZeros) != null) {
+			System.out.println(device.getDeviceId().toString() + " contains " + id);
+			// multi Sensors to be supported
+			// these have a similar name(DeviceID) plus the DeviceCode added (wrapper.telegramCode-DeviceCode)
+			/*if (getIdSensorMap().get(idWithZeros) != null) {
 				getIdSensorMap().get(idWithZeros).handleIncomingTelegram(telegram);
+				logger.debug("Device Found !!!!!!!!!!" + id);*/
+			if (getIdSensorMap().get(device.getDeviceId().getDevid()) != null) {
+				System.out.println("start handle telegram: " + device.getDeviceId().getDevid());
+				getIdSensorMap().get(device.getDeviceId().getDevid()).handleIncomingTelegram(telegram);
+				logger.debug("Device Found !!!!!!!!!!" + id);
+			
 			}
-		}
-		else if (listenMode) {
+		} else if (listenMode) {
 	        // handle unknown device
 	        listenedTelegrams.add(telegram.getTelegramString());
 	        synchronized (waitForListenTelegramMonitor) {
@@ -182,11 +182,10 @@ public void setBoolean(boolean valueBool, String internalIDWithPostfix, int dela
     String internalID = sensorIDFromIDWithPostfix(internalIDWithPostfix);
     String valueIdentifier = valueIdentifierFromIDWithPostfix(internalIDWithPostfix);
 
-    if (internatlIdActorMap.containsKey(internalID)) {
-        internatlIdActorMap.get(internalID).setBoolean(valueBool,
+    if (idActorMap.containsKey(internalID)) {
+        idActorMap.get(internalID).setBoolean(valueBool,
                 internalID, delay, tag, execute, valueIdentifier);
     } else {
-//        sendAlarm(getQueueName(), "Configuration: " + internalID + " missing", SysalSoapPortType.ALARMING_SRV_IDP);
     	logger.info("Configuration: " + internalID + " missing");
     }
 
@@ -199,10 +198,9 @@ public void setBoolean(boolean valueBool, String internalIDWithPostfix, int dela
         String valueIdentifier = valueIdentifierFromIDWithPostfix(internalIDWithPostfix);
 
         logger.debug("enocean received doubleveent");
-        if (internatlIdActorMap.containsKey(internalID)) {
-            internatlIdActorMap.get(internalID).setDouble(valueDbl, unit, internalID, delay, tag, execute, valueIdentifier);
+        if (idActorMap.containsKey(internalID)) {
+            idActorMap.get(internalID).setDouble(valueDbl, unit, internalID, delay, tag, execute, valueIdentifier);
         } else {
-//            sendAlarm(getQueueName(), "Configuration: " + internalID + " missing", SysalSoapPortType.ALARMING_SRV_IDP);
         	logger.info("Configuration: " + internalID + " missing");
         }
     }
@@ -213,10 +211,9 @@ public void setString(String value, String internalIDWithPostfix, int delay, Str
     String internalID = sensorIDFromIDWithPostfix(internalIDWithPostfix);
     String valueIdentifier = valueIdentifierFromIDWithPostfix(internalIDWithPostfix);
 
-    if (internatlIdActorMap.containsKey((internalID))) {
-        internatlIdActorMap.get((internalID)).setString(value, internalID, delay, tag, execute, valueIdentifier);
+    if (idActorMap.containsKey((internalID))) {
+        idActorMap.get((internalID)).setString(value, internalID, delay, tag, execute, valueIdentifier);
     } else {
-//        sendAlarm(getQueueName(), "Configuration: " + internalID + " missing", SysalSoapPortType.ALARMING_SRV_IDP);
     	logger.info("Configuration: " + internalID + " missing");
     }
 }
@@ -227,34 +224,22 @@ public void toggle(String internalIDToggleWithPostfix, int delay, String tag, bo
     String internalIDToggle = sensorIDFromIDWithPostfix(internalIDToggleWithPostfix);
     String valueIdentifier = valueIdentifierFromIDWithPostfix(internalIDToggleWithPostfix);
 
-    if (internatlIdActorMap.containsKey((internalIDToggle))) {
-        internatlIdActorMap.get((internalIDToggle)).toggle( internalIDToggle, delay, tag, execute, valueIdentifier);
+    if (idActorMap.containsKey((internalIDToggle))) {
+        idActorMap.get((internalIDToggle)).toggle( internalIDToggle, delay, tag, execute, valueIdentifier);
     } else {
-//        sendAlarm(getQueueName(), "Configuration: " + internalIDToggle + " missing", SysalSoapPortType.ALARMING_SRV_IDP);
     	logger.info("Configuration: " + internalIDToggle + " missing");
     }
 }
 
 //@Override
 public void stopLastCmd(String internalIDStop, int delay, String tag, boolean execute) {
-    if (internatlIdActorMap.containsKey((internalIDStop))) {
-        internatlIdActorMap.get((internalIDStop)).stopLastCmd(internalIDStop, delay, tag, execute);
+    if (idActorMap.containsKey((internalIDStop))) {
+        idActorMap.get((internalIDStop)).stopLastCmd(internalIDStop, delay, tag, execute);
     } else {
-//        sendAlarm(getQueueName(), "Configuration: " + internalIDStop + " missing", SysalSoapPortType.ALARMING_SRV_IDP);
     	logger.info("Configuration: " + internalIDStop + " missing");
     }
 }
 
-/**
- * Add a new Sensor to this component. The component will listen to this
- * Sensor and create Events.
- * 
- * @param key
- *            The uniqueID of the sensor. Key may contain ? - only the
- *            second part is stored in the Map
- * @param sensor
- *            Object of type Sensor to store along with the key.
- */
 
 /**
  * Add a new Actor to this component.
@@ -266,32 +251,11 @@ public void stopLastCmd(String internalIDStop, int delay, String tag, boolean ex
  *            Object of type Actor. Communicator and eventHandler are set
  *            and the ID is added automatically in the form "queueName?id".
  */
-public void addActorOrSensor(String deviceId , String wrapperId , int deviceCode) {
-   
-	try{
-		//Add by User
-		ContainerManagerInterface containerManagerClient = null;
-		DeviceId devId = new DeviceId(deviceId, wrapperId);
-		DefaultProxy<ContainerManagerInterface> clientInfo = new DefaultProxy<ContainerManagerInterface>(
-				ContainerManagerInterface.class, ContainerManagerQueueNames.getContainerManagerInterfaceQueryQueue(), 10000);
-		containerManagerClient = clientInfo.init();
-		DeviceContainer tempDevice = new DeviceContainer(devId, wrapperId , containerManagerClient.getDeviceSpecData(deviceCode));
-    
-		DeviceEvent ev = new DeviceEvent(tempDevice);
-		impl.getMaster().sendDeviceEvent(ev,impl.getClientId());
-	
-	} catch(TimeoutException e){
-		logger.error("timeout sending to master", e);
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-
-}
-
 public void addActor(String hrName, Actor actor, int deviceCode ) {
 	
-	internatlIdActorMap.put(hrName, actor);
+//	internatlIdActorMap.put(hrName, actor);
+//	idActorMap.put(actor.getId().toString(),actor);
+	idActorMap.put(actor.getDeviceId().toString(),actor);
     actor.getStrategy().setCommunicator(communicator);
     actor.setId(hrName);
 	
@@ -304,11 +268,14 @@ public void addActor(String hrName, Actor actor, int deviceCode ) {
 		containerManagerClient = clientInfo.init();
 		DeviceContainer tempDevice = new DeviceContainer(devId, impl.getWrapperTag() , containerManagerClient.getDeviceSpecData(deviceCode));
 		tempDevice.setHrName(hrName);
+		impl.devices.add(tempDevice);
 		DeviceEvent ev = new DeviceEvent(tempDevice);
 		impl.getMaster().sendDeviceEvent(ev, impl.getClientId());
 	
+		
 	} catch(TimeoutException e){
 		logger.error("timeout sending to master", e);
+		e.printStackTrace();
 	} catch (IOException e) {
 	// 	TODO Auto-generated catch block
 		e.printStackTrace();
@@ -316,27 +283,38 @@ public void addActor(String hrName, Actor actor, int deviceCode ) {
 	
 }
 
-public void addSensor(String id, Sensor sensor, int deviceCode ) {
+/**
+ * Add a new Sensor to this component. The component will listen to this
+ * Sensor and create Events.
+ * 
+ * @param key
+ *            The uniqueID of the sensor. Key may contain ? - only the
+ *            second part is stored in the Map
+ * @param sensor
+ *            Object of type Sensor to store along with the key.
+ */
+public void addSensor(String id, Sensor sensor, int deviceCode  ) {
 	
-	getIdSensorMap().put(id, sensor);
-    Collection<String> origins = sensor.getStrategy().getPossibleOrigins();
-    for (String origin : origins) {
-        String[] split = origin.split("\\?");
-        getIdSensorMap().put(split[split.length - 1], sensor);
-    }
-	
+	getIdSensorMap().put(sensor.getId().toString(), sensor);
+	System.out.println("Added the following Sensor: " + getIdSensorMap().get(sensor.getId().toString()).getId());
+
 	try{
 		//Read form DB
 		ContainerManagerInterface containerManagerClient = null;
-		DeviceId devId = new DeviceId(sensor.getId(), impl.getWrapperTag());
+		DeviceId devId = new DeviceId(sensor.getId().toString(), impl.getWrapperTag());
+		
 		DefaultProxy<ContainerManagerInterface> clientInfo = new DefaultProxy<ContainerManagerInterface>(
 			ContainerManagerInterface.class, ContainerManagerQueueNames.getContainerManagerInterfaceQueryQueue(), 10000);
 		containerManagerClient = clientInfo.init();
 		DeviceContainer tempDevice = new DeviceContainer(devId, impl.getWrapperTag() , containerManagerClient.getDeviceSpecData(deviceCode));
+		clientInfo.destroy();
+		
+		impl.devices.add(tempDevice);
 		DeviceEvent ev = new DeviceEvent(tempDevice);
 		impl.getMaster().sendDeviceEvent(ev, impl.getClientId());
 	}catch(TimeoutException e){
 		logger.error("timeout sending to master", e);
+		e.printStackTrace();
 	} catch (IOException e) {
 	// 	TODO Auto-generated catch block
 		e.printStackTrace();
@@ -364,7 +342,7 @@ public Sensor getSensor(String id) {
  * @return Object of type Actor
  */
 public Actor getActor(String internalId) {
-    return internatlIdActorMap.get(internalId);
+    return idActorMap.get(internalId);
 }
 
 /**
@@ -393,7 +371,7 @@ public List<String> getAvailableChannels() {
 public Collection<Actor> getActorForChannel(int channel) {
     Collection<Actor> result = new ArrayList<Actor>();
 
-    for (Actor actor : internatlIdActorMap.values()) {
+    for (Actor actor : idActorMap.values()) {
         if (actor.getChannel() == channel) {
             result.add(actor);
         }
@@ -409,7 +387,7 @@ public Collection<Actor> getActorForChannel(int channel) {
  * @return true if the internal map contained the actor, false otherwise
  */
 public boolean removeActor(String internalId) {
-    return (internatlIdActorMap.remove(internalId) != null);
+    return (idActorMap.remove(internalId) != null);
 }
 
 /**
@@ -438,7 +416,7 @@ public int getSensorCount() {
  * @return Integer of the counted value
  */
 public int getActorCount() {
-    return internatlIdActorMap.size();
+    return idActorMap.size();
 }
 
 /**

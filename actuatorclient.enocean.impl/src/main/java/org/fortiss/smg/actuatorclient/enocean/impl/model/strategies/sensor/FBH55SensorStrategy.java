@@ -1,20 +1,13 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor;
 
 import java.util.Map;
-
 import java.util.concurrent.TimeoutException;
+
 
 //import org.fortiss.smartmicrogrid.shared.builders.devspecbuilder.DeviceSpecBuilder;
 import org.fortiss.smg.websocket.api.shared.schema.DeviceCategory;
 import org.fortiss.smg.websocket.api.shared.schema.DeviceSpec;
+import org.fortiss.smg.containermanager.api.devices.DeviceContainer;
 import org.fortiss.smg.containermanager.api.devices.DeviceId;
 import org.fortiss.smg.containermanager.api.devices.SIUnitType;
 import org.fortiss.smg.actuatorclient.enocean.impl.ActuatorClientImpl;
@@ -40,17 +33,26 @@ public class FBH55SensorStrategy extends SensorStrategy{
 			// brightness is [0-2048]
 			int realBrightness = brightnessByte*8;
 			
-			DeviceId origin = impl.getDeviceSpecs().get(10).getDeviceId();
+//			DeviceId origin = impl.getDeviceSpecs().get(10).getDeviceId();
+			DeviceId origin = sensor.getDeviceId();
+			
+			
+		
+			
 			double value = (double) realBrightness;
 			DoubleEvent ev = new DoubleEvent(value);
+			System.out.println("++++ DeviceCode : " + sensor.getDeviceCode() + " ++++");
+			if (sensor.getDeviceCode() != 153) {
 	        impl.getMaster().sendDoubleEvent(ev, origin,impl.getClientId());
 	        logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + value );
 //			getEventHandler().doubleEvent(sensor.getId(), realBrightness, SIUnitType.LUX, 4D);
-
-
+	        
+	        //TODO: motion is another device !
+			}
+			else if (sensor.getDeviceCode() == 153) {
 			char motionByte = telegram.getDataByte(0);
 			boolean boolMotion = (motionByte==0x0d);
-			origin = impl.getDeviceSpecs().get(25).getDeviceId();
+//			origin = impl.getDeviceSpecs().get(25).getDeviceId();
 			if(boolMotion)
 				value = 1.0;
 			else 
@@ -60,6 +62,7 @@ public class FBH55SensorStrategy extends SensorStrategy{
 	        impl.getMaster().sendDoubleEvent(ev, origin,impl.getClientId());
 	        logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + value );
 //			getEventHandler().booleanEvent(sensor.getId(), boolMotion);
+			}
 
 		}else {
 			logger.warn("Received invalid telegram:"+telegram.getTelegramString());

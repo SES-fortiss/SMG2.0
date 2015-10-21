@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor;
 
 import java.util.ArrayList;
@@ -64,7 +56,9 @@ public class SteckdosenleisteActorStrategy extends ActorStrategy {
 		if (execute) {
 			communicator.sendTelegram(telegram);
 		} //otherwise change state without executing (external connection)
-		DeviceId origin = impl.getDeviceSpecs().get(6).getDeviceId();
+//		DeviceId origin = impl.getDeviceSpecs().get(6).getDeviceId();
+		DeviceId origin = actor.getDeviceId();
+		logger.debug(actor.getDeviceId().toString()+ " In Actor Steckdosenleiste class");
 		Double value = 0.0;
 		if (valueBool)
 			value = 1.0;

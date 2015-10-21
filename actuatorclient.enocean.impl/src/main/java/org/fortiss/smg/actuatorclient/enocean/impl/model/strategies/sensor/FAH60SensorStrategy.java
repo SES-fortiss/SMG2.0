@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor;
 
 import java.util.Map;
@@ -41,7 +33,9 @@ public class FAH60SensorStrategy extends SensorStrategy {
 			if (telegram.getDataByte(2)==0x00) {
 				int luxByte = telegram.getDataByte(3);
 				double realLux = luxByte*100.0/256;
-				DeviceId origin = impl.getDeviceSpecs().get(9).getDeviceId();
+//				DeviceId origin = impl.getDeviceSpecs().get(9).getDeviceId();
+				DeviceId origin = sensor.getDeviceId();
+				logger.debug(sensor.getDeviceId().toString()+ " In Sensor FAH60 class");
 				DoubleEvent ev = new DoubleEvent(realLux);
 	            impl.getMaster().sendDoubleEvent(ev, origin,impl.getClientId());
 	            logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + realLux );
@@ -49,7 +43,9 @@ public class FAH60SensorStrategy extends SensorStrategy {
 			}else {
 				int luxByte = telegram.getDataByte(2);
 				double realLux = luxByte*29700/256+300;
-				DeviceId origin = impl.getDeviceSpecs().get(9).getDeviceId();
+//				DeviceId origin = impl.getDeviceSpecs().get(9).getDeviceId();
+				DeviceId origin = sensor.getDeviceId();
+				logger.debug(sensor.getDeviceId().toString()+ " In Sensor FAH60 class");
 				DoubleEvent ev = new DoubleEvent(realLux);
 	            impl.getMaster().sendDoubleEvent(ev, origin,impl.getClientId());
 	            logger.info("EnOceanLooper: run(): getEventHandler - new Event from " +  origin + " value " + realLux );

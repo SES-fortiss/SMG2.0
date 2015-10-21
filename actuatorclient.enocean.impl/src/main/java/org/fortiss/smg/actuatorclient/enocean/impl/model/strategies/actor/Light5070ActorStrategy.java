@@ -1,22 +1,10 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-
-
 import java.util.List;
 import java.util.concurrent.TimeoutException;
-
-
 
 //import org.fortiss.smartmicrogrid.shared.builders.devspecbuilder.DeviceSpecBuilder;
 //import org.fortiss.smartmicrogrid.shared.schema.TeachInTelegramInfo;
@@ -40,7 +28,7 @@ public class Light5070ActorStrategy extends ActorStrategy {
 	private boolean lightState = false;
 	
 	public Light5070ActorStrategy() {
-		
+	
 	}
 	
 //	@Override
@@ -68,8 +56,10 @@ public class Light5070ActorStrategy extends ActorStrategy {
 			communicator.sendTelegram(telegram);
 		}
 		
-		List<DeviceContainer> spec = impl.getDeviceSpecs();
-		DeviceId origin = spec.get(3).getDeviceId();
+//		List<DeviceContainer> spec = impl.getDeviceSpecs();
+//		DeviceId origin = spec.get().getDeviceId();
+		DeviceId origin = actor.getDeviceId();
+		logger.debug(actor.getDeviceId().toString()+"In Actor Light 5070 class");
 		Double value = 0.0;
 		if (valueBool)
 			value = 1.0;

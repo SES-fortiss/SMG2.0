@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl;
 
 import gnu.io.CommPort;
@@ -138,7 +130,7 @@ public class USBStickCommunicator  extends Thread implements EnOceanCommunicator
 			
 			logger.info("portIdentifier: " + portIdentifier);
 			id = CommPortIdentifier.getPortIdentifier(portIdentifier);
-			CommPort commPort = id.open(this.getClass().getName(), 2000);
+			CommPort commPort = id.open(this.getClass().getName(), 5000);
 
 			if (commPort instanceof SerialPort) {
 				SerialPort serialPort = (SerialPort) commPort;
@@ -208,6 +200,7 @@ public class USBStickCommunicator  extends Thread implements EnOceanCommunicator
 		this.active = false;
 	}
 
+	
 	@Override
 	public boolean isActive() {
 		return active;

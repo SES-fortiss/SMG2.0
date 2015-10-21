@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor;
 
 import java.util.ArrayList;
@@ -15,6 +7,7 @@ import java.util.concurrent.Semaphore;
 
 
 import java.util.concurrent.TimeoutException;
+
 
 
 //import org.fortiss.smartmicrogrid.shared.builders.devspecbuilder.DeviceSpecBuilder;
@@ -286,8 +279,10 @@ public class FortissBlindActorStrategy extends ActorStrategy {
                     }
                     stopped = false;
                     
-                    DeviceId origin = impl.getDeviceSpecs().get(5).getDeviceId();
-            		
+//                    DeviceId origin = impl.getDeviceSpecs().get(5).getDeviceId();
+                    DeviceId origin = actor.getDeviceId();
+                    logger.debug(actor.getDeviceId().toString()+"In Actor Light 5070 class");
+                    
             		DoubleEvent ev = new DoubleEvent(currentPosition);
                     try {
 						impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());

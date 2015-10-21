@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.enocean.impl.persistence;
 
 import java.io.IOException;
@@ -25,6 +17,7 @@ import org.fortiss.smg.actuatorclient.enocean.impl.model.Sensor;
 import org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.ActorStrategy;
 import org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.AbstractImpl;
 import org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.SensorStrategy;
+import org.fortiss.smg.containermanager.api.devices.DeviceId;
 import org.fortiss.smg.informationbroker.api.InformationBrokerInterface;
 import org.fortiss.smg.informationbroker.api.InformationBrokerQueueNames;
 import org.fortiss.smg.remoteframework.lib.DefaultProxy;
@@ -105,6 +98,8 @@ public class WrapperPersistor {
         return object;
     }
 
+    
+    
     public Map<String, EnOceanLooper> createWrappersFromPersistency() {
 
         HashMap<String, EnOceanLooper> wrappers = new HashMap<String, EnOceanLooper>();
@@ -117,7 +112,10 @@ public class WrapperPersistor {
                  EnOceanLooper wrapper = impl.getLooperForTest(); 
                  EnOceanCommunicator communicator;
                  if (wrapperHost.equals("USB")) {
-                     String portIdentifier = "/dev/ttyUSB0"; //wrapperHost.substring("usb:".length());
+//                     String portIdentifier = "/dev/ttyACM0"; //wrapperHost.substring("usb:".length());
+                	 String portIdentifier = "/dev/ttyUSB0";
+                	 //String portIdentifier = "COM1";
+                	 
                      communicator = new USBStickCommunicator(wrapper, portIdentifier);
                  } else {
                      communicator = new ThermokonCommunicator(wrapperHost,wrapperPort, wrapper);
@@ -128,7 +126,7 @@ public class WrapperPersistor {
                             
                  // CODE FOR ACTORS AND SENSORS
                  List<Map<String, Object>> actorsSensorsFromDB = new ArrayList<Map<String, Object>>();
-                 actorsSensorsFromDB = broker.getSQLResults("SELECT Channel,Strategy,HRName,enoceanID,DeviceCode FROM EnOcean_Devices ");
+                 actorsSensorsFromDB = broker.getSQLResults("SELECT * FROM EnOcean_Devices ");
                  for(Map<String,Object> entity : actorsSensorsFromDB){        
 //                	 needed to be read from DataBase
                 	 int deviceCode = (Integer)entity.get("devicecode");
@@ -137,19 +135,21 @@ public class WrapperPersistor {
                      String id = (String)entity.get("enoceanid");
                      String strategyClassName = (String)entity.get("strategy");
                      WrapperPersistor.logger.debug(" + [Actor/Sensor]\t " + hrName + "\t " + strategyClassName);
+                     DeviceId deviceId = new DeviceId((Integer)entity.get("uniqueid")+"",hrName);
+//                     impl.setEnoceanDeviceIds(deviceId); //I add it
                      if (channel == -1)
-                    	 wrapper.addSensor(id, new Sensor(id, createSensorStrategy(strategyClassName, impl)), deviceCode);
+                    	 wrapper.addSensor(id+"-"+deviceCode, new Sensor(id+"-"+deviceCode, createSensorStrategy(strategyClassName, impl),deviceId, deviceCode), deviceCode);
                      else{
-                    	Actor actor = new Actor(channel,createActorStrategy(strategyClassName, impl));
-                    	wrapper.addActor(hrName, actor,deviceCode);
+                    	Actor actor = new Actor(channel,createActorStrategy(strategyClassName, impl),deviceId);
+                    	wrapper.addActor(hrName, actor, deviceCode);
                     	 }
                  }
-                                
+                               
                 // wrapper.activate();
-                 
+                
                  wrappers.put("enoceanQ",wrapper);
-            
-            
+                        
+                 
         }catch (TimeoutException e) {
 			WrapperPersistor.logger.error("Could not read EnOcean WrapperConfig from db: ", e);
             
