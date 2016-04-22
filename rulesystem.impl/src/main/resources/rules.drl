@@ -10,11 +10,11 @@ global org.slf4j.Logger logger;
  
 dialect "mvel"
 
-/*
+
 declare Message
 	status: int
 	message : String
-end */
+end 
 
 
 declare Events
@@ -36,9 +36,9 @@ end
 
 rule "Rule Event_container" 
 when 
-	Events( origin == "solarlog.wrapper.solar_generator_watt", val : value > 10)
+	Events( origin == "dummy.wrapper.dummy_brightness", val : value > 0)
 then 
-	 System.out.println( "Rule Event_container :: output ::"+val); 
+	 System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Dummy brightness is working $$$$$$$$$$$$$$$$$$$$$$$$$$$$"); 
 end 
 
 

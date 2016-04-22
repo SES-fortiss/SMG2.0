@@ -27,6 +27,7 @@ public class ActuatorClientImpl implements IActuatorClient {
 	private IActuatorMaster master;
 	private String clientId;
 	private ScheduledExecutorService executor;
+	private ScheduledExecutorService dummyswitcher;
 	private int pollFrequency;
 	private String host;
 	private String wrapperTag;
@@ -35,44 +36,116 @@ public class ActuatorClientImpl implements IActuatorClient {
 	/*
 	 * Values provided by this component
 	 */
-	private Double counsumption = 0.0;
-	private Double temperature = 20.0;
-	private Double brightness = 10.0;
-	private Double battery = 100.0;
-	private Double switchdevice = 0.0;
+
+	/*
+	 * switches - values provided from the simulation
+	 */
+	public Switcher gridconnected;
+	public Switcher energyfrombatteryrequest;
+	public Switcher generation;
 	
 	
 	
+	
+	public double[] consumptionArray = {3696,3497,3159,3297,3724,3106,3238,2523,3618,3308,3138,3361,3827,3777,3297,3059,2587,3925,3393,3247,2402,3049,2959,4402,3449,3253,4546,2457,4215,3423,4971,5091,4090,6107,5451,5578,8512,7292,9281,8612,9902,8039,8194,9248,9571,9118,8921,7176,7774,9087,7880,9574,8275,8591,7663,9494,8609,7927,10578,7701,12075,8316,8320,7921,7433,8526,7101,5932,8927,8785,6392,8734,7466,8652,4079,3810,3437,4504,3362,4031,3807,6350,3954,4805,3761,3253,3144,2649,3798,3735,2336,3110,2584,3414,4501,3394};
+	public double[] generationArray = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,24,45,62,161,440,432,569,742,936,1467,579,1920,2231,2428,2630,2785,2976,3109,3294,3345,3508,3600,3773,1581,3773,3773,3773,729,3771,3771,3772,3773,3771,1048,3773,3772,3770,3642,3446,3366,3259,3085,2866,2724,2516,2319,2083,1864,1605,1262,1014,741,469,275,126,28,4,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	private int arrayCounter = 0;
+	
+	
+	
+	private double consumption = 0.0;
+	private double generationpercentage = 0.0;
+	
+	private double batterypercentage = 1.0 *250; //for the arrayexample x 500; // 1 = 100%
+	public static double batterycapacitymax = 100000.0; // 100k max
+	private double batterycapacitycurrent = 100000.0; // 100k max
+	
+	
+	public ContainerManagerInterface containerManagerClient = null;
+	private DefaultProxy<ContainerManagerInterface> clientInfo = null;
+
 	
 	ArrayList<DeviceContainer> devices = new ArrayList<DeviceContainer>();
 
 	public ActuatorClientImpl(String host, String port, String wrapperTag,
 			int pollFreq, String username, String password) {
 
+		
+		/* Test one Connection to CM */
+		
+		//DefaultProxy<ContainerManagerInterface> 
+		clientInfo = new DefaultProxy<ContainerManagerInterface>(
+				ContainerManagerInterface.class,
+				ContainerManagerQueueNames.getContainerManagerInterfaceQueryQueue(), 5000);
+
+		logger.info("try to init CM interface");
+		
+		try {
+			containerManagerClient = clientInfo.init();
+		}
+		catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		} catch (TimeoutException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		}
+		
+		
 		this.host = host;
 		this.wrapperTag = wrapperTag;
 		loadStaticDevs(wrapperTag);
 		this.pollFrequency = pollFreq;
 
 
+		this.gridconnected = new Switcher(1.0);
+		this.generation = new Switcher(0.0);
+		this.energyfrombatteryrequest = new Switcher(0.0);
+		
+
+		
 	}
 
 	
 	public synchronized void activate() {
+		
+
+	
+	
+	
+	
 		sendNewDeviceEvents();
 		
 		executor = Executors.newSingleThreadScheduledExecutor();
 		executor.scheduleAtFixedRate(new DummyLooper(this), 0,
 				getPollFrequency(), TimeUnit.SECONDS);
+		
+		/*
+		 * this class simulates calls which are usually issued via the containermanager
+		 */
+		dummyswitcher = Executors.newSingleThreadScheduledExecutor();
+		dummyswitcher.scheduleAtFixedRate(new DummySwitcher(this), 10,
+				getPollFrequency(), TimeUnit.SECONDS);
+		
 	}
 
 
 
 
 	public synchronized void deactivate() {
+		
+		try {
+			clientInfo.destroy();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		executor.shutdown();
+		dummyswitcher.shutdown();
 		try {
 			executor.awaitTermination(1, TimeUnit.MINUTES);
+			dummyswitcher.awaitTermination(1, TimeUnit.MINUTES);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -90,8 +163,21 @@ public class ActuatorClientImpl implements IActuatorClient {
 
 	@Override
 	public void onDoubleCommand(DoubleCommand command, DeviceId dev) {
-		logger.info("Command " + command.getValue() + " was sent to "
-				+ dev.toString());
+		logger.info("Executing: Command " + command.getValue() + " was sent to "
+				+ dev.toString() + "(" + dev.getDevid() + ")");
+		
+		if (dev.getDevid().contains("generation")) {
+			logger.info("Updating Generation " + command.getValue() );
+			generation.setStatus(command.getValue()*500.0);			
+		} 
+		else if (dev.getDevid().contains("switchgridconnected")) {
+			gridconnected.setStatus(command.getValue());
+		}
+		else if (dev.getDevid().contains("energyfrombatteryrequest")) {
+			energyfrombatteryrequest.setStatus(command.getValue());
+		} 
+
+
 
 	}
 	
@@ -99,10 +185,10 @@ public class ActuatorClientImpl implements IActuatorClient {
 	private void sendNewDeviceEvents() {
 		for (DeviceContainer dev : devices) {
 			try {
-				//master.sendDeviceEvent(dev, this.clientId);
+			
 				logger.info("Try to send " + dev.getDeviceId()
 						+ " to master");
-				master.sendDeviceEvent(new DeviceEvent(dev), this.clientId);
+				this.master.sendDeviceEvent(new DeviceEvent(dev), this.clientId);
 				logger.info("Sent " + dev.getDeviceId()
 						+ " to master");
 				
@@ -156,127 +242,127 @@ public class ActuatorClientImpl implements IActuatorClient {
 	
 	
 	private void loadStaticDevs(String wraperTag) {
-		DefaultProxy<ContainerManagerInterface> clientInfo = new DefaultProxy<ContainerManagerInterface>(
-				ContainerManagerInterface.class,
-				ContainerManagerQueueNames.getContainerManagerInterfaceQueryQueue(), 10000);
-
-		logger.info("try to init CM interface");
-		ContainerManagerInterface containerManagerClient = null;
+//		DefaultProxy<ContainerManagerInterface> clientInfo = new DefaultProxy<ContainerManagerInterface>(
+//				ContainerManagerInterface.class,
+//				ContainerManagerQueueNames.getContainerManagerInterfaceQueryQueue(), 10000);
+//
+//		logger.info("try to init CM interface");
+//		ContainerManagerInterface containerManagerClient = null;
 		try {
-			containerManagerClient = clientInfo.init();
+//			containerManagerClient = clientInfo.init();
 			
 		/*
 		 * Device Spec from the Solar Log Generator Devices
 		 */
 		DeviceContainer dummyConsumptionMeter = new DeviceContainer(
 				new org.fortiss.smg.containermanager.api.devices.DeviceId(
-						"dummy_consumption_watt", wrapperTag), wrapperTag
-						+ ".solar");
-		
-		dummyConsumptionMeter.setRange(0,Integer.MAX_VALUE, 1);
+						"dummy_consumption", wrapperTag), wrapperTag
+						, containerManagerClient.getDeviceSpecData(101));
 		dummyConsumptionMeter.setHrName("Dummy Consumption [W]");
-		dummyConsumptionMeter.setDeviceType(SIDeviceType.ConsumptionPowermeter);
-		
-		DeviceContainer dummyTemp = new DeviceContainer(
+
+		DeviceContainer dummyGenerationMeter = new DeviceContainer(
 				new org.fortiss.smg.containermanager.api.devices.DeviceId(
-						"dummy_temperature", wrapperTag), wrapperTag
-						, containerManagerClient.getDeviceSpecData(13)
-				);
-		
-		
-		DeviceContainer dummyBrightness = new DeviceContainer(
-				new org.fortiss.smg.containermanager.api.devices.DeviceId(
-						"dummy_brightness", wrapperTag),
-				wrapperTag, containerManagerClient.getDeviceSpecData(5) 
-				);
+						"dummy_generation", wrapperTag), wrapperTag
+						, containerManagerClient.getDeviceSpecData(111));
+		dummyGenerationMeter.setHrName("Dummy Generation [W]");
+
 
 		DeviceContainer dummyBattery = new DeviceContainer(
 				new org.fortiss.smg.containermanager.api.devices.DeviceId(
 						"dummy_battery", wrapperTag),
 				wrapperTag, containerManagerClient.getDeviceSpecData(140) 
 				);		
-
-		DeviceContainer dummySwitch = new DeviceContainer(
+		dummyBattery.setHrName("Dummy Battery [%]");
+		
+		DeviceContainer dummySwitchGridConnected = new DeviceContainer(
 				new org.fortiss.smg.containermanager.api.devices.DeviceId(
-						"dummy_switch", wrapperTag),
+						"dummy_switchgridconnected", wrapperTag),
 				wrapperTag, containerManagerClient.getDeviceSpecData(145) 
-				);		
+				);	
+	
+
+		DeviceContainer dummySwitchEnergyfromBatteryRequest = new DeviceContainer(
+				new org.fortiss.smg.containermanager.api.devices.DeviceId(
+						"dummy_switchenergyfrombatteryrequest", wrapperTag),
+				wrapperTag, containerManagerClient.getDeviceSpecData(145) 
+				);	
+		
+		
+		DeviceContainer dummySwitchGeneration = new DeviceContainer(
+				new org.fortiss.smg.containermanager.api.devices.DeviceId(
+						"dummy_switchgeneration", wrapperTag),
+				wrapperTag, containerManagerClient.getDeviceSpecData(145) 
+				);
 		
 		
 		devices.add(dummyConsumptionMeter);
-		devices.add(dummyTemp);
-		devices.add(dummyBrightness);
+		devices.add(dummyGenerationMeter);
 		devices.add(dummyBattery);
-		devices.add(dummySwitch);
+		devices.add(dummySwitchGridConnected);
+		devices.add(dummySwitchGeneration);
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
 		} catch (TimeoutException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		try {
-			clientInfo.destroy();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		
+//		
+//		try {
+//			clientInfo.destroy();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 	}
 	
-	public Double getConsumption() {
-		return counsumption;
+	public double getConsumption() {
+		return consumption;
 	}
 
 
-	public void setConsumption(Double counsumption) {
-		this.counsumption = counsumption;
+	public void setConsumption(Double consumption) {
+		this.consumption = consumption;
+	}
+
+	public double getGeneration() {
+		return generation.getStatus();
 	}
 
 
-
-	public Double getTemperature() {
-		return temperature;
+	public void setGeneration(Double generation) {
+		this.generation.setStatus(generation);;
 	}
 
 
-	public void setTemperature(Double temperature) {
-		this.temperature = temperature;
+	public Double getBatteryPercentage() {
+		return batterypercentage;
 	}
 
 
-	public Double getBrightness() {
-		return brightness;
+	public void setBatteryPercentage(Double batterypercentage) {
+		this.batterypercentage = batterypercentage;
 	}
-
-
-	public void setBrightness(Double brightness) {
-		this.brightness = brightness;
-	}
-
 
 	public Double getBattery() {
-		return battery;
+		return batterycapacitycurrent;
 	}
 
 
-	public void setBattery(Double battery) {
-		this.battery = battery;
+	public void setBattery(Double batterycapacitycurrent) {
+		this.batterycapacitycurrent = batterycapacitycurrent;
 	}
 
-
-	public Double getSwitchdevice() {
-		return switchdevice;
+	public double[] getEnergyvalues() {
+		arrayCounter++;
+		arrayCounter = arrayCounter%96;
+		
+		double[] result = {consumptionArray[arrayCounter],generationArray[arrayCounter]};
+		return 	result;
 	}
-
-
-	public void setSwitchdevice(Double switchdevice) {
-		this.switchdevice = switchdevice;
-	}
-
 	
 	
 }

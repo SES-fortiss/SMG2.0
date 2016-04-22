@@ -4,20 +4,14 @@
 		<salience>1</salience>
   		<duration>1</duration>
 		<no-loop> true </no-loop>
-		<agenda-group> agenda-group </agenda-group>
+		<agenda-group> active </agenda-group>
 		<activation-group> activation-group </activation-group>
     	<ruleCondition> condition </ruleCondition>
        	<ruleConsequence ruleType = "notification">
        		<user userid= "123"/>
       		<container containerid= "room225"/>
-			<notification notifyType = "mail">
-      	 		<content>Mail content </content>
-			</notification>
-			<notification notifyType = "tweet">
-      	 		<content> Tweet content </content>
-			</notification>
-			<notification notifyType = "SMS">
-      	 		<content> SMS content </content>
+			<notification notificationType = "mail">
+      	 		<content> content </content>
 			</notification>
        	</ruleConsequence>
 	</rule>
@@ -26,17 +20,17 @@
 		<salience>2</salience>
   		<duration>3</duration>
 		<no-loop> true </no-loop>
-		<agenda-group> agenda-group </agenda-group>
+		<agenda-group> inactive </agenda-group>
 		<activation-group> activation-group </activation-group>
     	<ruleCondition> Boolean condition </ruleCondition>
        	<ruleConsequence ruleType= "command">
        		<user userid= "789"/>
-      		<container containerid= "room225"/>
-      		<commands>
-      			<command>"sendCommand(new DoubleCommand(10.0) ,new DeviceId("dev", "dummy"));"</command>
-       			<command>"sendCommand(new DoubleCommand(10.0) ,new DeviceId("blinds", "dummy"));"</command>
-      		</commands>
+      		<container containerid= "room225"/>	
+      		<command>
+       			<content>"sendCommand(new DoubleCommand(10.0) ,new DeviceId("blinds", "dummy"));"</content>
+      		</command>
        		
        	</ruleConsequence>
 	</rule>
+	</Rules>
 </Rules>

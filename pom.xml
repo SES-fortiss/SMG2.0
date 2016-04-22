@@ -291,10 +291,17 @@
 		<module>usermanager.impl</module>
 		<module>usermanager.test</module>
 
+		<module>postman.api</module>
+		<module>postman.impl</module>
+		<module>postman.test</module>
+		
 		<module>test.mocker</module>
 
-		<module>actuatorclient.arduino.impl</module>
-		<module>actuatorclient.arduino.test</module>
+		<module>actuatorclient.dummy.impl</module>
+		<module>actuatorclient.dummy.test</module>
+
+	<!--<module>actuatorclient.arduino.impl</module>
+ 		<module>actuatorclient.arduino.test</module> -->
 
 		<module>actuatorclient.sunny.impl</module>
 		<module>actuatorclient.sunny.test</module>
@@ -311,48 +318,43 @@
 
 		<module>actuatorclient.ipswitch.impl</module>
 		<module>actuatorclient.ipswitch.test</module>
-
+		
 		<module>actuatorclient.hexabus.impl</module>
 		<module>actuatorclient.hexabus.test</module>
 
 		<module>actuatorclient.froeschl.impl</module>
 		<module>actuatorclient.froeschl.test</module>
-
-		<module>actuatorclient.enocean.impl</module>
+		
+		<module>actuatorclient.enocean.impl</module> 
 		<module>actuatorclient.enocean.test</module>
+		
+		<!-- <module>actuatorclient.energybuffer.impl</module> -->
 
 		<!-- <module>actuatorclient.smartphoneserver.impl</module> <module>actuatorclient.smartphoneserver.test</module> -->
-
-		<module>postman.api</module>
-		<module>postman.impl</module>
-		<module>postman.test</module>
-
-		<module>optimizer.api</module>
-		<module>optimizer.impl</module>
-		<module>optimizer.test</module>
 
 		<module>rulesystem.api</module>
 		<module>rulesystem.impl</module>
 		<module>rulesystem.test</module>
 
-		<module>gamification.api</module>
-		<module>gamification.impl</module>
-		<module>gamification.test</module>
-
 		<module>analyzer.api</module>
 		<module>analyzer.impl</module>
 		<module>analyzer.test</module>
 
-		<module>prophet.api</module>
+		<!-- <module>prophet.api</module>
 		<module>prophet.impl</module>
 		<module>prophet.test</module>
-
+ -->
 		<!-- <module>meterpush.api</module> <module>meterpush.impl</module> <module>meterpush.test</module> -->
 
 		<module>trader.api</module>
 		<module>trader.impl</module>
 		<module>trader.test</module>
 
+
+        <module>gamification.api</module>
+        <module>gamification.impl</module>
+        <module>gamification.test</module>
+		
 		<module>webrest.api</module>
 		<module>webrest.impl</module>
 		<module>webrest.test</module>
