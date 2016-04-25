@@ -66,7 +66,7 @@ public class EnumTestImpl implements ContainerManagerInterface {
 	}
 
 	@Override
-	public Container getContainer(String id) throws Exception {
+	public Container getContainer(String id) throws TimeoutException {
 		Container test = new Container("test", "test", ContainerType.ROOM, ContainerFunction.OFFICE, false);
 		return test;
 	}
@@ -293,7 +293,7 @@ public class EnumTestImpl implements ContainerManagerInterface {
 	}
 */
 
-	@Override
+	
 	public void sendCommand(DoubleCommand command, String containerId,
 			SIDeviceType type) throws TimeoutException {
 		// TODO Auto-generated method stub
@@ -353,5 +353,12 @@ public class EnumTestImpl implements ContainerManagerInterface {
 			throws TimeoutException {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void sendCommandToContainer(DoubleCommand command,
+			String containerId, SIDeviceType type) throws TimeoutException {
+		// TODO Auto-generated method stub
+		
 	}
 }
