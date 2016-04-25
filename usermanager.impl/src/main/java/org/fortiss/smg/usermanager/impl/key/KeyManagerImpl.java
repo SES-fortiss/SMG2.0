@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.usermanager.impl.key;
 
 import java.math.BigInteger;
@@ -83,12 +75,11 @@ public class KeyManagerImpl implements KeyManagerInterface {
 	public boolean checkSignature(String access_key, String request,
 			String signature) throws TimeoutException {
 		KeyDB key = getKeyDB(access_key);
-		System.out.println(key);
 		if (key != null) {
 			if (key.getPrivateKey().length() >= 1) {
 				String server_signature = calcSignature(key.getPrivateKey(),
 						request);
-				System.out.println("Check: " + server_signature + " = " + signature);
+				logger.debug("Check: " + server_signature + " = " + signature);
 				if (server_signature.equals(signature)) {
 					//LastSeen should be updated
 					updateLastSeen(access_key);

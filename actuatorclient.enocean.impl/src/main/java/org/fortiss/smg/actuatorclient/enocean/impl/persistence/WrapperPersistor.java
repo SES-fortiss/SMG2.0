@@ -135,12 +135,13 @@ public class WrapperPersistor {
                      String id = (String)entity.get("enoceanid");
                      String strategyClassName = (String)entity.get("strategy");
                      WrapperPersistor.logger.debug(" + [Actor/Sensor]\t " + hrName + "\t " + strategyClassName);
-                     DeviceId deviceId = new DeviceId((Integer)entity.get("uniqueid")+"",hrName);
+                     DeviceId deviceId = new DeviceId(id+"-"+deviceCode, impl.getWrapperTag());
 //                     impl.setEnoceanDeviceIds(deviceId); //I add it
                      if (channel == -1)
                     	 wrapper.addSensor(id+"-"+deviceCode, new Sensor(id+"-"+deviceCode, createSensorStrategy(strategyClassName, impl),deviceId, deviceCode), deviceCode);
                      else{
                     	Actor actor = new Actor(channel,createActorStrategy(strategyClassName, impl),deviceId);
+                    	//wrapper.addActor(id+"-"+deviceCode, actor, deviceCode);
                     	wrapper.addActor(hrName, actor, deviceCode);
                     	 }
                  }

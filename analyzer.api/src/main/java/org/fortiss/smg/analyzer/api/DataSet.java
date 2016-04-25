@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.analyzer.api;
 
 import java.util.ArrayList;
@@ -27,11 +19,11 @@ public class DataSet {
 	/**
 	 * time where the data collection in the database starts
 	 */
-	private Calendar startDate = Calendar.getInstance();
+	private long startDate = 0;
 	/**
 	 * time where the data collection in the database ends
 	 */
-	private Calendar stopDate = Calendar.getInstance();
+	private long stopDate = 0;
 	/**
 	 * includes the single data points which were found in the database
 	 */
@@ -58,19 +50,19 @@ public class DataSet {
 	 * @throws NullArgumentException
 	 *             if either {@code stopDate, startDate or dev} is set null
 	 */
-	public DataSet(Calendar startDate, Calendar stopDate, DeviceId dev,
+	public DataSet(long startDate, long stopDate, DeviceId dev,
 			List<DoublePoint> dataList) throws NullArgumentException {
-		if (startDate == null) {
+		if (startDate == 0) {
 			throw new NullArgumentException();
 		}
-		if (stopDate == null) {
+		if (stopDate == 0) {
 			throw new NullArgumentException();
 		}
 		if (dev == null) {
 			throw new NullArgumentException();
 		}
-		this.startDate.setTimeInMillis(startDate.getTimeInMillis());
-		this.stopDate.setTimeInMillis(stopDate.getTimeInMillis());
+		this.startDate = (startDate);
+		this.stopDate = (stopDate);
 		this.device = dev;
 		this.dataList = dataList;
 	}
@@ -87,36 +79,36 @@ public class DataSet {
 	 * @throws NullArgumentException
 	 *             if either {@code stopDate, startDate or device} is set null
 	 */
-	public DataSet(Calendar startDate, Calendar stopDate, DeviceId device)
+	public DataSet(long startDate, long stopDate, DeviceId device)
 			throws NullArgumentException {
-		if (startDate == null) {
+		if (startDate == 0) {
 			throw new NullArgumentException();
 		}
-		if (stopDate == null) {
+		if (stopDate == 0) {
 			throw new NullArgumentException();
 		}
 		if (device == null) {
 			throw new NullArgumentException();
 		}
-		this.startDate.setTimeInMillis(startDate.getTimeInMillis());
-		this.stopDate.setTimeInMillis(stopDate.getTimeInMillis());
+		this.startDate= (startDate);
+		this.stopDate = (stopDate);
 		this.device = device;
 		this.dataList = null;
 	}
 
-	public Calendar getStartDate() {
+	public long getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Calendar startDate) {
+	public void setStartDate(long startDate) {
 		this.startDate = startDate;
 	}
 
-	public Calendar getStopDate() {
+	public long getStopDate() {
 		return stopDate;
 	}
 
-	public void setStopDate(Calendar stopDate) {
+	public void setStopDate(long stopDate) {
 		this.stopDate = stopDate;
 	}
 
@@ -138,8 +130,8 @@ public class DataSet {
 
 	@Override
 	public String toString() {
-		return DataSet.class.toString() + "[startDate=" + startDate.getTime()
-				+ ", stopDate=" + stopDate.getTime() + ", DeviceId=" + device
+		return DataSet.class.toString() + "[startDate=" + startDate
+				+ ", stopDate=" + stopDate + ", DeviceId=" + device
 				+ "dataList=" + dataList + "]";
 	}
 
@@ -155,10 +147,10 @@ public class DataSet {
 			return false;
 		}
 		DataSet other = (DataSet) obj;
-		if (!this.startDate.equals(other.startDate)) {
+		if (this.startDate != other.startDate) {
 			return false;
 		}
-		if (!this.stopDate.equals(other.stopDate)) {
+		if (this.stopDate != other.stopDate){
 			return false;
 		}
 		if (!this.device.equals(other.device)) {

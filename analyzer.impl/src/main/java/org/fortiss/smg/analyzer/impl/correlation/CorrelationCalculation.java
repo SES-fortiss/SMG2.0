@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.analyzer.impl.correlation;
 
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -99,8 +91,8 @@ public class CorrelationCalculation {
 				// choose shortest spline interval, in which both splines are
 				// defined, if they would have the same start point
 				double intervallDifference = xDataSet.getStartDate()
-						.getTimeInMillis()
-						- yDataSet.getStartDate().getTimeInMillis();
+						
+						- yDataSet.getStartDate();
 				if (xFunction.getKnots()[0] < yFunction.getKnots()[0]
 						+ intervallDifference) {
 					firstTimeStamp = yFunction.getKnots()[0]
@@ -150,9 +142,8 @@ public class CorrelationCalculation {
 	 * @return true if the interval length is the same; else false
 	 */
 	private static boolean equalIntervallLength(DataSet set1, DataSet set2) {
-		if ((set1.getStopDate().getTimeInMillis() - set1.getStartDate()
-				.getTimeInMillis()) == (set2.getStopDate().getTimeInMillis() - set2
-				.getStartDate().getTimeInMillis())) {
+		if ((set1.getStopDate() - set1.getStartDate()) == (set2.getStopDate() - set2
+				.getStartDate())) {
 			return true;
 		}
 		return false;
@@ -168,6 +159,6 @@ public class CorrelationCalculation {
 	 * @return true if the star time is the same; else false;
 	 */
 	private static boolean sameIntervallStartPoint(DataSet set1, DataSet set2) {
-		return set1.getStartDate().equals(set2.getStartDate());
+		return set1.getStartDate()==(set2.getStartDate());
 	}
 }

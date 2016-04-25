@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.webrest.impl;
 
 import java.io.IOException;
@@ -141,7 +133,7 @@ public class LoginFilter implements Filter {
             signature = signature_temp;
             //dirty
             signature = signature.replace(" ", "+");
-            System.out.println("Received signature: " + signature);
+            logger.debug("Received signature: " + signature);
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }

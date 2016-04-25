@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.ambulance.impl;
 
 import java.io.IOException;
@@ -96,14 +88,14 @@ public class AmbulanceImpl implements AmbulanceInterface {
 			} catch (TimeoutException e) {
 				logger.info("Healthcheck for "+ queue+ " failed. Timeout exceded");
 				map.put(queue, false);
-			}finally{
+			}
+			
 				try {
 					healthCheck.destroy();
 				} catch (IOException e) {
 					logger.info("Unable to close con. for queue:"+queue);
 					map.put(queue, false);
 				}
-			}
 			
 			
 		}

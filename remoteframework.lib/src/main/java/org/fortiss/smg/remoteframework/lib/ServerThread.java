@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.remoteframework.lib;
 
 import java.io.IOException;
@@ -13,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 
 import org.fortiss.smg.remoteframework.lib.jsonrpc.JsonRpcServer;
 import org.slf4j.Logger;
@@ -31,13 +24,14 @@ public class ServerThread {
 	private final ExecutorService executor = Executors
 			.newSingleThreadExecutor();
 	private static final ConnectionFactory factory = new ConnectionFactory();
-	private Connection connection = factory.newConnection();
+	private Connection connection;
 	private Channel channel = null;
 	
 	private final static Logger logger = (Logger) LoggerFactory.getLogger(ServerThread.class.getCanonicalName()); 
 
 	public  ServerThread(Class<?> klass, Object impl, String queue)
 			throws IOException {
+		connection = factory.newConnection();
 		if (connection != null && !connection.isOpen()) {
 			connection = factory.newConnection();
 		}

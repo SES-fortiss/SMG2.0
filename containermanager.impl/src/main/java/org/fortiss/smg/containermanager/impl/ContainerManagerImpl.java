@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.containermanager.impl;
 
 import java.io.IOException;
@@ -99,7 +91,6 @@ public class ContainerManagerImpl implements ContainerManagerInterface,
 				IActuatorMaster.class,
 				ActuatorMasterQueueNames.getActuatorMasterInterfaceQueue(),
 				TIMEOUTLONG);
-		
 		try {
 			masterPermanent = proxyMasterPermanent.init();
 			
@@ -287,10 +278,10 @@ public class ContainerManagerImpl implements ContainerManagerInterface,
 
 	@Override
 	public void onDoubleEventReceived(DoubleEvent ev, DeviceId dev,
-			String client) {
+			String client) throws TimeoutException {
 		
 	
-		
+		logger.info("Event from " + dev + " Value " + ev.getValue());
 
 		if (dev != null) {
 
@@ -353,7 +344,7 @@ public class ContainerManagerImpl implements ContainerManagerInterface,
 					}
 
 				}
-				logger.info(LoggingString);
+				logger.debug(LoggingString);
 			} else {
 				logger.debug("Device not found " + dev.toContainterId());
 			}
@@ -554,18 +545,40 @@ public class ContainerManagerImpl implements ContainerManagerInterface,
 		return null;
 	}
 
+	
 	@Override
 	public void sendCommand(DoubleCommand command, DeviceId id) {
+		DefaultProxy<IActuatorMaster> proxyMasterCommand = new DefaultProxy<IActuatorMaster>(
+				IActuatorMaster.class,
+				ActuatorMasterQueueNames.getActuatorMasterInterfaceQueue(),
+				TIMEOUTLONG);
 		
 		try {
-			this.masterPermanent.sendDoubleCommand(command, id);
+			IActuatorMaster proxyCommand = proxyMasterCommand.init();
+			if (proxyCommand != null) {
+				Container con = this.getContainer(id.toContainterId());
+				if (con instanceof DeviceContainer) {
+					((DeviceContainer) con).setValue(command.getValue());
+				}
+				proxyCommand.sendDoubleCommand(command, id);
+			}
 		} catch (TimeoutException e) {
 			logger.debug("sending command failed", e.fillInStackTrace());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			proxyMasterCommand.destroy();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
+	
 
 	@Override
-	public void sendCommand(DoubleCommand command, String containerId,
+	public void sendCommandToContainer(DoubleCommand command, String containerId,
 			SIDeviceType type) {
 		// first get all children
 		for (Entry<Container, EdgeType> entry : this
@@ -575,14 +588,21 @@ public class ContainerManagerImpl implements ContainerManagerInterface,
 				DeviceContainer deviceContainer = (DeviceContainer) con;
 				if (deviceContainer.getDeviceType().equals(type)
 						&& deviceContainer.getCommandMaxRange() > 0) {
+					deviceContainer.setValue(command.getValue());
 					sendCommand(command, deviceContainer.getDeviceId());
 				}
 			}
 
-			sendCommand(command, con.getContainerId(), type);
+			sendCommandToContainer(command, con.getContainerId(), type);
 
 		}
 	}
+	
+	
+	public void sendCommand(DoubleCommand command, String containerId, SIDeviceType type, long userId) {
+		//TODO Connect to the Usermanager and verify userId has access to containerId
+	}
+	
 
 	@Override
 	public ArrayList<String> getParentContainer(String id) {
@@ -676,18 +696,24 @@ public class ContainerManagerImpl implements ContainerManagerInterface,
 		else */ 
 		if (reasonableforSum.contains(type)) {
 			//TODO it is the other way round
-			return getSumByType(ContainerId, type);
+			return this.getSumByType(ContainerId, type);
 		}
 		else {
-			return getMeanByType(ContainerId, type);
+			return this.getMeanByType(ContainerId, type);
 		}
 	}
 	
 	@Override
 	public double getSumByType(String ContainerId, SIDeviceType type) {
 		double result = -1.0;
+		if (this.cons.containsKey(ContainerId)) {
 		if (typeIsReasonable("SUM", type)) {
+			
 			result = this.cons.get(ContainerId).getSum(type);
+		}
+		else {
+			result = this.cons.get(ContainerId).getMean(type);
+		}
 		}
 		return result;
 	}
@@ -695,20 +721,35 @@ public class ContainerManagerImpl implements ContainerManagerInterface,
 	@Override
 	public double getMeanByType(String ContainerId, SIDeviceType type) {
 		double result = -1.0;
+		if (this.cons.containsKey(ContainerId)) {
 		if (typeIsReasonable("MEAN", type)) {
 			result = this.cons.get(ContainerId).getMean(type);
+		}
+		else {
+			result = this.cons.get(ContainerId).getSum(type);
+		}
 		}
 		return result;
 	}
 
 	@Override
 	public double getMinByType(String ContainerId, SIDeviceType type) {
+		if (this.cons.containsKey(ContainerId)) {
 		return this.cons.get(ContainerId).getMin(type);
+		}
+		else {
+			return -1.0;
+		}
 	}
 
 	@Override
 	public double getMaxByType(String ContainerId, SIDeviceType type) {
+		if (this.cons.containsKey(ContainerId)) {
 		return this.cons.get(ContainerId).getMax(type);
+	}
+	else {
+		return -1.0;
+	}
 	}
 
 	@Override

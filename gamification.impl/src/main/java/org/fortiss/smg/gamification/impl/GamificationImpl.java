@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.gamification.impl;
 
 import java.io.IOException;
@@ -51,7 +43,7 @@ public class GamificationImpl implements GamificationInterface {
 	
 	IDatabase database;
 	public static final String DB_NAME_GMUSERS = "gamificationmanager_end_users";
-	public static final String DB_NAME_GMGROUPS = "GamificationManager_groups";
+	public static final String DB_NAME_GMGROUPS = "GamificationManager_Groups";
 	public static final String DB_NAME_GMMEMBERSHIPS = "GamificationManager_group_memberships";
 	public static final String DB_NAME_GMHEXABUS_CHRONICLE = "user_hexabus_assignments_chronicle";
 	public static final String DB_NAME_GMSCORE_HISTORY = "user_score_history";
@@ -119,7 +111,7 @@ public class GamificationImpl implements GamificationInterface {
 
 	}
 
-	public void createSingleGamificationUser(int userManagerID, String name) {
+	public void createSingleGamificationUser(int userManagerID, String name) throws TimeoutException {
 		SingleGamificationUser user = new SingleGamificationUser(userManagerID,
 				name);
 		addSingleGamificationUser(user);
@@ -340,7 +332,7 @@ public class GamificationImpl implements GamificationInterface {
 		return false;
 	}
 
-	public boolean addPointsToGamificationUser(int userManagerID, int points) {
+	public boolean addPointsToGamificationUser(int userManagerID, int points) throws TimeoutException {
 		if (endUsers.containsKey(userManagerID)) {
 			SingleGamificationUser user = endUsers.get(userManagerID);
 			user.setScore(user.getScore() + points);
@@ -388,27 +380,30 @@ public class GamificationImpl implements GamificationInterface {
 		return false;
 	}
 
-	public Map<Integer, SingleGamificationUser> getGamificationUsers() {
-		Map<Integer, SingleGamificationUser> clonedUsers = new HashMap<Integer, SingleGamificationUser>();
+	public Map<String, SingleGamificationUser> getGamificationUsers() {
+		Map<String, SingleGamificationUser> clonedUsers = new HashMap<String, SingleGamificationUser>();
 		if(endUsers != null) {
 			Iterator<SingleGamificationUser> itr = endUsers.values().iterator();
 			while(itr.hasNext()) {
 				SingleGamificationUser user = itr.next();
-				clonedUsers.put(user.getUserManagerID(), new SingleGamificationUser(user));
+				clonedUsers.put(""+user.getUserManagerID(), new SingleGamificationUser(user));
 			}
 		}
 		return clonedUsers;
 	}
 
-	public Map<Integer, GamificationGroup> getGamificationGroups() {
-		Map<Integer, GamificationGroup> clonedGroups = new HashMap<Integer, GamificationGroup>();
+	public Map<String, GamificationGroup> getGamificationGroups() throws TimeoutException{
+		Map<String, GamificationGroup> clonedGroups = new HashMap<String, GamificationGroup>();
+		logger.debug("Select Groups");
 		if(gamificationGroups != null) {
+			logger.debug("Groups exist");
 			Iterator<GamificationGroup> itr = gamificationGroups.values().iterator();
 			while(itr.hasNext()) {
 				GamificationGroup group = itr.next();
-				clonedGroups.put(group.getId(), new GamificationGroup(group));
+				clonedGroups.put(""+group.getId(), new GamificationGroup(group));
 			}
 		}
+		logger.info("Found "+ clonedGroups.size() + " groups");
 		return clonedGroups;
 	}
 
@@ -711,10 +706,10 @@ public class GamificationImpl implements GamificationInterface {
 		return false;
 	}
 
-	public Map<Integer, SingleGamificationUser> getGamificationUsersFilterScore(
+	public Map<String, SingleGamificationUser> getGamificationUsersFilterScore(
 			long startTimestamp, long endTimeStamp) {
 		try {
-			Map<Integer, SingleGamificationUser> users = getGamificationUsers();
+			Map<String, SingleGamificationUser> users = getGamificationUsers();
 			Iterator<SingleGamificationUser> itr = users.values().iterator();
 			while(itr.hasNext()) {
 				SingleGamificationUser user = itr.next();
@@ -751,10 +746,10 @@ public class GamificationImpl implements GamificationInterface {
 		return null;
 	}
 
-	public Map<Integer, GamificationGroup> getGamificationGroupsFilterScore(
+	public Map<String, GamificationGroup> getGamificationGroupsFilterScore(
 			long startTimestamp, long endTimeStamp) {
 		try {
-			Map<Integer, GamificationGroup> groups = getGamificationGroups();
+			Map<String, GamificationGroup> groups = getGamificationGroups();
 			Iterator<GamificationGroup> itr = groups.values().iterator();
 			while(itr.hasNext()) {
 				GamificationGroup group = itr.next();
@@ -872,8 +867,8 @@ public class GamificationImpl implements GamificationInterface {
 		return getPropertiesForUser(ID, userIsGroup).containsKey(propertyID);
 	}
 	
-	public boolean setUserAchievement(int ID, int achievementID, boolean userIsGroup) {
-		Map<Integer, ? extends GamificationParticipant> participants;
+	public boolean setUserAchievement(int ID, int achievementID, boolean userIsGroup) throws TimeoutException {
+		Map<String, ? extends GamificationParticipant> participants;
 		if(userIsGroup) {
 			participants = getGamificationGroups();
 		}
@@ -898,7 +893,7 @@ public class GamificationImpl implements GamificationInterface {
 	}
 	
 	//normally a user can't lose an achievement
-	public boolean removeUserAchievement(int ID, int achievementID, boolean userIsGroup) {
+	public boolean removeUserAchievement(int ID, int achievementID, boolean userIsGroup) throws TimeoutException {
 		try {
 			String sql;
 			int userIsGroupEntry = 0;
@@ -918,7 +913,7 @@ public class GamificationImpl implements GamificationInterface {
 
 	}
 	
-	public boolean setUserProperty(int ID, int propertyID, boolean userIsGroup) {
+	public boolean setUserProperty(int ID, int propertyID, boolean userIsGroup) throws TimeoutException {
 		Set<Integer> properties = getPropertiesForUser(ID, userIsGroup).keySet();
 		if(!properties.contains(propertyID)) {
 			boolean succesful = saveUserPropertyToDB(ID, propertyID, userIsGroup);
@@ -985,8 +980,8 @@ public class GamificationImpl implements GamificationInterface {
 	}
 
 	
-	private boolean saveUserPropertyToDB(int ID, int propertyID, boolean userIsGroup) {
-		Map<Integer, ? extends GamificationParticipant> participants;
+	private boolean saveUserPropertyToDB(int ID, int propertyID, boolean userIsGroup) throws TimeoutException {
+		Map<String, ? extends GamificationParticipant> participants;
 		if(userIsGroup) {
 			participants = getGamificationGroups();
 		}
@@ -1164,7 +1159,7 @@ public class GamificationImpl implements GamificationInterface {
 	}
 
 	public boolean answerOpenQuestionForUser(int userManagerID, int questionID,
-			int answerID) {
+			int answerID) throws TimeoutException {
 		Map<Integer,QuizQuestion> questions = quizQuestionStore.getQuestions();
 		if(!endUsers.containsKey(userManagerID) || !questions.containsKey(questionID)||
 				!getOpenQuestionsForUser(userManagerID).contains(questionID)) {

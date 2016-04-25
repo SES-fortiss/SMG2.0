@@ -1,27 +1,50 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
+	<parent>
 		<groupId>org.fortiss.smartmicrogrid</groupId>
 		<artifactId>smartmicrogrid</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-    <artifactId>prophet.impl</artifactId>
+	<artifactId>prophet.impl</artifactId>
 
-    <packaging>bundle</packaging>
+	<packaging>bundle</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>prophet.api</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-    	<dependency>
+	<dependencies>
+	  <dependency>
+        <groupId>net.sourceforge</groupId>
+        <artifactId>openForecast</artifactId>
+        <version>0.5.0</version>
+       <!--   <systemPath>${basedir}/src/main/resources/OpenForecast-0.5.0.jar</systemPath> -->
+    </dependency>
+ 	   <dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-math</artifactId>
+		<version>2.0</version>
+	</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>prophet.api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>ambulance.api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>informationbroker.api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>sqltools.lib</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
@@ -31,36 +54,55 @@
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.2.0</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mnode.ical4j</groupId>
+			<artifactId>ical4j</artifactId>
+			<version>1.0.2</version>
+		</dependency>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>${project.name}</Bundle-SymbolicName>
-                        <Bundle-Activator>org.fortiss.smg.prophet.impl.ProphetActivator</Bundle-Activator>
-                        <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
-                        <Embed-Directory>OSGI-INF/lib</Embed-Directory>
-                        <Embed-Transitive>true</Embed-Transitive>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-shell</artifactId>
+			<version>2.0.0-M05</version>
+		</dependency>
+
+
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.name}</Bundle-SymbolicName>
+						<Bundle-Activator>org.fortiss.smg.prophet.impl.ProphetActivator</Bundle-Activator>
+						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+						<Embed-Directory>OSGI-INF/lib</Embed-Directory>
+						<Embed-Transitive>true</Embed-Transitive>
 						<Export-Package>
-								org.fortiss.smg.prophet.impl
+							org.fortiss.smg.prophet.impl
 						</Export-Package>
-                        <Import-Package>
-                            *;resolution:=optional
-                            </Import-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+						<Import-Package>
+							*;resolution:=optional
+						</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.analyzer.impl;
 
 import java.io.File;
@@ -72,7 +64,7 @@ public class Test {
 		stop.set(2014, 1, 30, 23, 57, 49);
 		start.set(2013, 8, 19, 10, 30, 0);
 
-		DataSet electricty1 = new DataSet(start, stop, new DeviceId(
+		DataSet electricty1 = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.W.toString(),
 				"siemensQ?C1/MMXU1.W.phsA.cVal.cVal.mag"), null);
 
@@ -86,9 +78,9 @@ public class Test {
 
 		System.out.println("***** START FETCHING *****");
 		System.out.println("Stop Date: "
-				+ electricty1.getStopDate().getTime().toString());
+				+ electricty1.getStopDate());
 		System.out.println("Start Date: "
-				+ electricty1.getStartDate().getTime().toString());
+				+ electricty1.getStartDate());
 
 		electricty1.toString();
 	}
@@ -105,7 +97,7 @@ public class Test {
 		stop.set(2014, 1, 30, 23, 57, 49);
 		start.set(2013, 8, 19, 10, 30, 0);
 
-		DataSet electricty1 = new DataSet(start, stop, new DeviceId(
+		DataSet electricty1 = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.W.toString(),
 				"siemensQ?C1/MMXU1.W.phsA.cVal.cVal.mag"), null);
 
@@ -148,7 +140,7 @@ public class Test {
 		lightStop.set(2013, 10, 14, 16, 23, 0);
 		lightStart.set(2013, 10, 11, 17, 43, 51);
 
-		DataSet boolData = new DataSet(lightStart, lightStop, new DeviceId(
+		DataSet boolData = new DataSet(lightStart.getTimeInMillis(), lightStop.getTimeInMillis(), new DeviceId(
 				null, "enoceanQ?office1030light"), null);
 
 		try {
@@ -176,7 +168,7 @@ public class Test {
 		startDate.set(2013, 9, 1, 00, 00, 00);
 		stopDate.set(2014, 2, 1, 00, 00, 00);
 
-		DataSet dataSet = new DataSet(startDate, stopDate, new DeviceId(
+		DataSet dataSet = new DataSet(startDate.getTimeInMillis(), stopDate.getTimeInMillis(), new DeviceId(
 				SIUnitType.CELSIUS.toString(), "enoceanQ?0003B078"), null);
 		try {
 			DatabaseRequestor.fetchesDataSet(dataSet, broker);
@@ -190,9 +182,9 @@ public class Test {
 
 		System.out.println("***** CREATE BAR CHART PILLAR *****");
 		System.out.println("Stop Date: "
-				+ dataSet.getStopDate().getTime().toString());
+				+ dataSet.getStopDate());
 		System.out.println("Start Date: "
-				+ dataSet.getStartDate().getTime().toString());
+				+ dataSet.getStartDate());
 		List<DoublePoint> pillarList = new ArrayList<DoublePoint>();
 		pillarList = Comparison.barChart(dataSet, Calendar.MONTH, 1, cal);
 		pillarList.toString();
@@ -242,13 +234,13 @@ public class Test {
 		start.set(2013, 11, 1, 0, 0, 0);
 		stop.set(2013, 11, 2, 0, 0, 0);
 
-		DataSet outside = new DataSet(start, stop, new DeviceId(
+		DataSet outside = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.CELSIUS.toString(), "enoceanQ?0003B078"));
-		DataSet meetingRoom = new DataSet(start, stop, new DeviceId(
+		DataSet meetingRoom = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.CELSIUS.toString(), "enoceanQ?010066F4_Actual"));
-		DataSet room2 = new DataSet(start, stop, new DeviceId(
+		DataSet room2 = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.CELSIUS.toString(), "enoceanQ?01003E48_Actual"));
-		DataSet solar = new DataSet(start, stop, new DeviceId(
+		DataSet solar = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.CELSIUS.toString(), "solarlogQ?EinspeiseWerte"));
 		try {
 			DatabaseRequestor.fetchesDataSet(outside, broker);
@@ -323,17 +315,17 @@ public class Test {
 		stop.set(2013, 11, 2, 0, 0, 0);
 
 		// testing Compare Fraction
-		DataSet westWingSicherung = new DataSet(start, stop, new DeviceId(
+		DataSet westWingSicherung = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.W.toString(), "siemensQ153?C2/MMXU1.TotW.mag.mag"));
-		DataSet westWingSwitch = new DataSet(start, stop, new DeviceId(
+		DataSet westWingSwitch = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.W.toString(), "siemensQ153?C4/MMXU1.TotW.mag.mag"));
-		DataSet eastWingSicherung = new DataSet(start, stop, new DeviceId(
+		DataSet eastWingSicherung = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.W.toString(), "siemensQ153?C1/MMXU1.TotW.mag.mag"));
-		DataSet eastWingSwitch = new DataSet(start, stop, new DeviceId(
+		DataSet eastWingSwitch = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.W.toString(), "siemensQ153?C3/MMXU1.TotW.mag.mag"));
-		DataSet server = new DataSet(start, stop, new DeviceId(
+		DataSet server = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.W.toString(), "siemensQ?C1/MMXU1.TotW.mag.mag"));
-		DataSet total = new DataSet(start, stop, new DeviceId(
+		DataSet total = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.W.toString(), "acc.VPowerTracker1"));
 
 		try {
@@ -447,7 +439,7 @@ public class Test {
 		System.out.println("Stop Date: " + stop.getTime().toString());
 		System.out.println("Start Date: " + start.getTime().toString());
 
-		DataSet dezember = new DataSet(start, stop, new DeviceId(
+		DataSet dezember = new DataSet(start.getTimeInMillis(), stop.getTimeInMillis(), new DeviceId(
 				SIUnitType.W.toString(), "acc.VPowerTracker1"));
 		try {
 			DatabaseRequestor.fetchesDataSet(dezember, broker);
@@ -470,7 +462,7 @@ public class Test {
 		System.out.println("NovStop Date: " + stopNov.getTime().toString());
 		System.out.println("NovStart Date: " + startNov.getTime().toString());
 
-		DataSet november = new DataSet(startNov, stopNov, new DeviceId(
+		DataSet november = new DataSet(startNov.getTimeInMillis(), stopNov.getTimeInMillis(), new DeviceId(
 				SIUnitType.W.toString(), "acc.VPowerTracker1"));
 		try {
 			DatabaseRequestor.fetchesDataSet(november, broker);
@@ -544,7 +536,7 @@ public class Test {
 				"enoceanQ?0003B078");
 		ArithmeticMean arith = new ArithmeticMean();
 
-		DataSet temp = new DataSet(tempstart, tempstop, tempdev);
+		DataSet temp = new DataSet(tempstart.getTimeInMillis(), tempstop.getTimeInMillis(), tempdev);
 		try {
 			DatabaseRequestor.fetchesDataSet(temp, broker);
 		} catch (SQLException e1) {
@@ -559,7 +551,7 @@ public class Test {
 		temp2start.add(Calendar.DAY_OF_MONTH, 1);
 		temp2stop.setTimeInMillis(tempstop.getTimeInMillis());
 		temp2stop.add(Calendar.DAY_OF_MONTH, 1);
-		DataSet temp2 = new DataSet(temp2start, temp2stop, tempdev);
+		DataSet temp2 = new DataSet(temp2start.getTimeInMillis(), temp2stop.getTimeInMillis(), tempdev);
 		try {
 			DatabaseRequestor.fetchesDataSet(temp2, broker);
 		} catch (SQLException e1) {
@@ -606,7 +598,7 @@ public class Test {
 		tempStart.set(2013, 8, 1, 00, 15, 13);
 		tempStop.set(2013, 10, 1, 12, 23, 13);
 
-		DataSet temperaturData = new DataSet(tempStart, tempStop, new DeviceId(
+		DataSet temperaturData = new DataSet(tempStart.getTimeInMillis(), tempStop.getTimeInMillis(), new DeviceId(
 				SIUnitType.CELSIUS.toString(), "enoceanQ?0003B078"));
 		try {
 			DatabaseRequestor.fetchesDataSet(temperaturData, broker);
@@ -631,7 +623,7 @@ public class Test {
 		tempStart.set(2013, 8, 1, 00, 15, 13);
 		tempStop.set(2013, 10, 1, 12, 23, 13);
 
-		DataSet temperature = new DataSet(tempStart, tempStop, new DeviceId(
+		DataSet temperature = new DataSet(tempStart.getTimeInMillis(), tempStop.getTimeInMillis(), new DeviceId(
 				SIUnitType.CELSIUS.toString(), "enoceanQ?0003B078"));
 		try {
 			DatabaseRequestor.fetchesDataSet(temperature, broker);
@@ -721,8 +713,7 @@ public class Test {
 
 		SimpleDateFormat formateDate = new SimpleDateFormat("yyyy MM dd");
 		for (DataSet analy : classAll.getSimilar()) {
-			System.out.println(formateDate.format(analy.getStartDate()
-					.getTime()));
+			System.out.println(formateDate.format(analy.getStartDate()));
 		}
 		System.out.println("finished loess interpolating");
 	}
@@ -770,10 +761,9 @@ public class Test {
 		SimpleDateFormat formateDate = new SimpleDateFormat("yyyy MM dd");
 		System.out.println("Datum Klassifikator: "
 				+ formateDate.format(classi.getAllDataSets().get(14)
-						.getStartDate().getTime()));
+						.getStartDate()));
 		for (DataSet analy : classi.getSimilar()) {
-			System.out.println(formateDate.format(analy.getStartDate()
-					.getTime()));
+			System.out.println(formateDate.format(analy.getStartDate()));
 		}
 
 		Plotter.singleDataSet(classi.getAllDataSets().get(4),
@@ -822,8 +812,7 @@ public class Test {
 		// prints all dates that were similar
 		SimpleDateFormat formateDate = new SimpleDateFormat("yyyy MM dd");
 		for (DataSet analy : classi.getSimilar()) {
-			System.out.println(formateDate.format(analy.getStartDate()
-					.getTime()));
+			System.out.println(formateDate.format(analy.getStartDate()));
 		}
 		System.out.println("finished loess interpolating");
 	}
@@ -853,7 +842,7 @@ public class Test {
 		SimpleDateFormat formateTime = new SimpleDateFormat("HH:mm:ss SSSS");
 		System.out.println("Datum Vergleichstag: "
 				+ formateDate.format(classi.getAllDataSets().get(9)
-						.getStartDate().getTime()));
+						.getStartDate()));
 		System.out.println("");
 		int i = 1;
 		for (List<DoublePoint> single : allPeaks) {

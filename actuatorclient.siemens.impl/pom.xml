@@ -12,9 +12,9 @@
 
 	<packaging>bundle</packaging>
 
-  	<properties>
-        <cxf.version>3.0.0</cxf.version>
-    </properties>
+	<properties>
+		<cxf.version>3.0.0</cxf.version>
+	</properties>
 
 
 	<dependencies>
@@ -49,6 +49,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>smg.schemas</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>4.2.0</version>
@@ -67,21 +73,21 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-            <version>${cxf.version}</version>
-            <scope>compile</scope>
-            <exclusions>
-                    <exclusion>
-                        <groupId>com.sun.xml.bind</groupId>
-						<artifactId>jaxb-impl</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.bind</groupId>
-						<artifactId>jaxb-api</artifactId>
-                    </exclusion>
-            </exclusions>
-        </dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>${cxf.version}</version>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.xml.bind</groupId>
+					<artifactId>jaxb-impl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.xml.bind</groupId>
+					<artifactId>jaxb-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 
 	<build>

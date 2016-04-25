@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.analyzer.impl.visualization;
 
 import java.io.File;
@@ -13,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -126,7 +119,7 @@ public class Plotter {
 		LinkedHashMap<String, List<Double>> plotterMap = new LinkedHashMap<String, List<Double>>();
 
 		List<DoublePoint> dataList = dataSet.getDataList();
-		long difference = dataSet.getStartDate().getTimeInMillis()
+		long difference = dataSet.getStartDate()
 				- function.getFunctionStartTime().getTimeInMillis();
 		double[] knots = function.getFunction().getKnots();
 
@@ -145,10 +138,11 @@ public class Plotter {
 		List<String> origin = new ArrayList<String>();
 		origin.add("Zeit in Stunden");
 		origin.add("Mustertag");
-
+		Calendar start = Calendar.getInstance();
+		start.setTimeInMillis(dataSet.getStartDate());
 		SimpleDateFormat formateDate = new SimpleDateFormat("dd.MM.yyyy");
 		origin.add("Messwerte des "
-				+ formateDate.format(dataSet.getStartDate().getTime()));
+				+ formateDate.format(start.getTime()));
 
 		try {
 			out.writeDouble(plotterMap, new FileOutputStream(new File(
@@ -184,8 +178,10 @@ public class Plotter {
 		List<String> origin = new ArrayList<String>();
 		origin.add("Zeit in Stunden");
 		SimpleDateFormat formateDate = new SimpleDateFormat("dd MM yyyy");
+		Calendar start = Calendar.getInstance();
+		start.setTimeInMillis(dataSet.getStartDate());
 		origin.add("Messdaten des Montags: "
-				+ formateDate.format(dataSet.getStartDate().getTime()));
+				+ formateDate.format(start.getTime()));
 
 		try {
 			out.writeDouble(plotterMap, new FileOutputStream(new File(
@@ -221,7 +217,7 @@ public class Plotter {
 		LinkedHashMap<String, List<Double>> plotterMap = new LinkedHashMap<String, List<Double>>();
 
 		List<DoublePoint> dataList = dataSet.getDataList();
-		long difference = dataSet.getStartDate().getTimeInMillis()
+		long difference = dataSet.getStartDate()
 				- classifyingFunction.getFunctionStartTime().getTimeInMillis();
 		double[] knots = classifyingFunction.getFunction().getKnots();
 
@@ -260,8 +256,10 @@ public class Plotter {
 		origin.add("Zeit in Stunden");
 		origin.add("Mustertag");
 		SimpleDateFormat formateDate = new SimpleDateFormat("dd.MM.yyyy");
+		Calendar start = Calendar.getInstance();
+		start.setTimeInMillis(dataSet.getStartDate());
 		origin.add("Messwerte des "
-				+ formateDate.format(dataSet.getStartDate().getTime()));
+				+ formateDate.format(start.getTime()));
 		origin.add("Spitzenwerte");
 
 		try {

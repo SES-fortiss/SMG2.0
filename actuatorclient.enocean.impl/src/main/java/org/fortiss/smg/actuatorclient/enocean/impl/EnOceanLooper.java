@@ -150,16 +150,34 @@ public void handleIncomingTelegram(UniversalTelegram telegram) {
     // Apparently we look here if the device id is already known
     for (DeviceContainer device : devices) {
 		if(device.getDeviceId().toString().contains(id)){
-			System.out.println(device.getDeviceId().toString() + " contains " + id);
+			logger.debug(device.getDeviceId().toString() + " contains " + id);
 			// multi Sensors to be supported
 			// these have a similar name(DeviceID) plus the DeviceCode added (wrapper.telegramCode-DeviceCode)
 			/*if (getIdSensorMap().get(idWithZeros) != null) {
 				getIdSensorMap().get(idWithZeros).handleIncomingTelegram(telegram);
 				logger.debug("Device Found !!!!!!!!!!" + id);*/
 			if (getIdSensorMap().get(device.getDeviceId().getDevid()) != null) {
-				System.out.println("start handle telegram: " + device.getDeviceId().getDevid());
+				logger.debug("start handle telegram: " + device.getDeviceId().getDevid());
 				getIdSensorMap().get(device.getDeviceId().getDevid()).handleIncomingTelegram(telegram);
 				logger.debug("Device Found !!!!!!!!!!" + id);
+				
+				
+				/* TODO
+				 * temporary "rule" will be removed when rule system is working
+				 */
+				if (id.contains("1860B")) {
+					if (telegram.getDataByte(0)==0x09) {
+						setBoolean(false, new DeviceId("PowerPlug", impl.getWrapperTag()).toString(),0,"",true );
+						//setBoolean(true, new DeviceId("37Steckdosenleiste", impl.getWrapperTag()).toString(),0,"",true );
+						//setBoolean(true, new DeviceId("31office5070light", impl.getWrapperTag()).toString(),0,"",true );
+					}
+					else {
+						setBoolean(true, new DeviceId("PowerPlug", impl.getWrapperTag()).toString(),0,"",true );
+						//setBoolean(false, new DeviceId("37Steckdosenleiste", impl.getWrapperTag()).toString(),0,"",true );
+						//setBoolean(false, new DeviceId("31office5070light", impl.getWrapperTag()).toString(),0,"",true );
+					}
+				}
+				
 			
 			}
 		} else if (listenMode) {
@@ -267,6 +285,7 @@ public void addActor(String hrName, Actor actor, int deviceCode ) {
 			ContainerManagerInterface.class, ContainerManagerQueueNames.getContainerManagerInterfaceQueryQueue(), 10000);
 		containerManagerClient = clientInfo.init();
 		DeviceContainer tempDevice = new DeviceContainer(devId, impl.getWrapperTag() , containerManagerClient.getDeviceSpecData(deviceCode));
+		clientInfo.destroy();
 		tempDevice.setHrName(hrName);
 		impl.devices.add(tempDevice);
 		DeviceEvent ev = new DeviceEvent(tempDevice);
@@ -296,7 +315,7 @@ public void addActor(String hrName, Actor actor, int deviceCode ) {
 public void addSensor(String id, Sensor sensor, int deviceCode  ) {
 	
 	getIdSensorMap().put(sensor.getId().toString(), sensor);
-	System.out.println("Added the following Sensor: " + getIdSensorMap().get(sensor.getId().toString()).getId());
+	logger.debug("Added the following Sensor: " + getIdSensorMap().get(sensor.getId().toString()).getId());
 
 	try{
 		//Read form DB

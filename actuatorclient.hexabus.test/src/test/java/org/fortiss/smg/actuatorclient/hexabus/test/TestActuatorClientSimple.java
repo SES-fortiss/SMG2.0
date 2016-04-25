@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.hexabus.test;
 
 import static org.junit.Assert.assertEquals;
@@ -83,7 +75,7 @@ public class TestActuatorClientSimple extends AbstractClient {
 		implClient = new ActuatorClientImpl("http://192.168.21.217:8080/devicetree.json" , "8080", "hexabus.wrapper", 10, "", "");
 		// Register at Actuator Master (self, human readable name for device)
 		try {
-			registerAsClientAtServer(impl, "awesome-abstract-client-hexabus", new IOnConnectListener() {
+			registerAsClientAtServer(implClient, "awesome-abstract-client-hexabus", new IOnConnectListener() {
 				
 				@Override
 				public void onSuccessFullConnection() {

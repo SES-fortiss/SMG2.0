@@ -60,7 +60,7 @@ public class TestActuatorClientEnocean  extends AbstractClient{
 					implClient.setMaster(master);
 					implClient.setClientId(clientId);
 					implClient.activate();
-					implClient.connectToEncoean();
+					
 				}
 			});
 			
@@ -68,7 +68,8 @@ public class TestActuatorClientEnocean  extends AbstractClient{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//implClient.connectToEncoean();
+		implClient.connectToEncoean();
+
 		logger.info("ActuatorClient[enocean] is alive");		
 
 		

@@ -1,13 +1,21 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.smgschemas.commands;
 
+
+//use JsonTypeInfo.Id.CLASS for class naming
+
+//Specify sub-classes using @JsonSubTypes annotation
+//without this, deserializer will not be able to locate sub-types to use
+/*
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="type")
+@JsonSubTypes({  
+ @Type(value=DoubleCommand.class, name="doubleCommand"),  
+})
+*/
+
+
+/*
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
+*/
 public class AbstractCommand<E> {
 
 	E value;

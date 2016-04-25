@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.froeschl.impl;
 
 import java.util.Date;
@@ -58,8 +50,9 @@ public class FroeschlLooper implements Runnable {
 	 *      Creating a new Event with this String
 	 *  	[0] = Actual Consumption
 	 *  	[1] = Actual Consumption Unit
-	 *  	[2] = actueller Zaehlerstand
-	 *  	[3] = actueller Zaehlerstand Unit
+	 *  	[2] = aktueller Zaehlerstand
+	 *  	[3] = aktueller Zaehlerstand Unit
+	 *  	[4] = Tagesverbrauch
 	 */
 	 
 	private void createNewEvent(String[] values) {

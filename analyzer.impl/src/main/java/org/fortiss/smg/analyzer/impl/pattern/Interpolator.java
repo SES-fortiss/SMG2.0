@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.analyzer.impl.pattern;
 
 import java.util.ArrayList;
@@ -230,7 +222,7 @@ public class Interpolator {
 			throw new IllegalArgumentException("list is empty or null");
 		}
 		this.functionStartTime.setTimeInMillis(allDataSets.get(0)
-				.getStartDate().getTimeInMillis());
+				.getStartDate());
 		List<double[]> sortedElements = concatenate(allDataSets);
 		sortAndRemove(sortedElements);
 		// restructures the list with tuples (x, y) back into 2 arrays
@@ -259,7 +251,7 @@ public class Interpolator {
 	private static List<double[]> concatenate(List<DataSet> allDataSets) {
 		double[] mergedX = new double[0];
 		double[] mergedY = new double[0];
-		long startTime = allDataSets.get(0).getStartDate().getTimeInMillis();
+		long startTime = allDataSets.get(0).getStartDate();
 		for (Iterator<DataSet> iterator = allDataSets.iterator(); iterator
 				.hasNext();) {
 			DataSet actualDataSet = (DataSet) iterator.next();
@@ -267,8 +259,7 @@ public class Interpolator {
 			if (actMap == null || actMap.isEmpty()) {
 				iterator.remove();
 			} else {
-				long actStartDate = actualDataSet.getStartDate()
-						.getTimeInMillis();
+				long actStartDate = actualDataSet.getStartDate();
 				long difference = actStartDate - startTime;
 				double[] actX = actMap.get("x");
 				for (int i = 0; i < actX.length; i++) {

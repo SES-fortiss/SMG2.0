@@ -61,11 +61,9 @@ public class USBStickCommunicator  extends Thread implements EnOceanCommunicator
 			}
 		}
 		TelegramBuffer buffer = new TelegramBuffer(new USBTelegramHandler() {
+	
 	@Override
 	public void handleTelegram(char[] telegramBytes) {
-			
-				//	System.out.println(StringByteUtils.byteCharToHexString(telegramBytes[4]));
-					//System.out.println(new ESP3Telegram(telegramBytes, true).getTelegramString());
 					
 				if (StringByteUtils.byteCharToHexString(telegramBytes[4]).equals("01")) {
 					logger.debug("found telegram" + Arrays.toString(telegramBytes));
@@ -91,10 +89,8 @@ public class USBStickCommunicator  extends Thread implements EnOceanCommunicator
 					i = in.read();
 					
 					if ( i != -1) {
-						//System.out.println("run loop received " + i);
 						buffer.receive((char) i);
 					}
-				//buffer.receive(i);
 				}
 				catch (IOException e) {
 					logger.error("IO-Exception while reading from EnOcean-USB", e);
@@ -117,11 +113,11 @@ public class USBStickCommunicator  extends Thread implements EnOceanCommunicator
 	                    CommPort thePort = com.open("CommUtil", 50);
 	                    thePort.close();
 	                    h.add(com);
-	                    System.out.println( com);
+	                    
 	                } catch (PortInUseException e) {
-	                    System.out.println("Port, "  + com.getName() + ", is in use.");
+	                    logger.debug("Port, "  + com.getName() + ", is in use.");
 	                } catch (Exception e) {
-	                    System.err.println("Failed to open port " +  com.getName());
+	                	logger.debug("Failed to open port " +  com.getName());
 	                    e.printStackTrace();
 	                }
 	            }
@@ -170,20 +166,20 @@ public class USBStickCommunicator  extends Thread implements EnOceanCommunicator
 		} else {
 			telegramToSend = new ESP3Telegram(telegram);
 		}
-			System.out.println(telegramToSend.toString());
+			logger.debug(telegramToSend.toString());
 		logger.debug("Sending {}",StringByteUtils.byteCharsToHexString(telegramToSend.getTelegramBytes()));
 
 		try 
 		{
 			for (char b : telegramToSend.getTelegramBytes()) {
 				logger.debug("out: "+StringByteUtils.byteCharToHexString(b));
-				System.out.println(b);
 				out.write(b);
 			}
-	//		for (char b : StringByteUtils.readBytes("55000707017AF630001B10963003FFFFFFFFFF00F1")) {
-	//			logger.debug("out: "+StringByteUtils.byteCharToHexString(b));
-	//			out.write(b);
-	//		}
+			out.flush();
+			/*for (char b : StringByteUtils.readBytes("55000707017AF630001B10963003FFFFFFFFFF00F1")) {
+				logger.debug("out: "+StringByteUtils.byteCharToHexString(b));
+				out.write(b);
+			}*/
 
 		} catch (IOException e) {
 			logger.error("Could not end Telegram " + telegram, e);

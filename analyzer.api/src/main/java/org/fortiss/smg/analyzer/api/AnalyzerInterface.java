@@ -1,23 +1,14 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.analyzer.api;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
 import org.fortiss.smg.ambulance.api.HealthCheck;
 import org.fortiss.smg.containermanager.api.devices.DeviceId;
 
-/**
- * @author Ann Katrin Gibtner (annkatrin.gibtner@tum.de)
- *
- */
+
 public interface AnalyzerInterface extends HealthCheck {
 
 	/**
@@ -40,7 +31,7 @@ public interface AnalyzerInterface extends HealthCheck {
 	 * @throws IllegalArgumentException
 	 *             if {@code startTime, stopTime and/or device} is null
 	 */
-	public Double getSum(Calendar startTime, Calendar stopTime, DeviceId device)
+	public Double getSum(long startTime, long stopTime, DeviceId device)
 			throws NoDataFoundException, TimeoutException,
 			IllegalArgumentException;
 
@@ -64,7 +55,7 @@ public interface AnalyzerInterface extends HealthCheck {
 	 * @throws IllegalArgumentException
 	 *             if {@code startTime, stopTime and/or device} is null
 	 */
-	public Double getArithmeticMean(Calendar startTime, Calendar stopTime,
+	public Double getArithmeticMean(long startTime, long stopTime,
 			DeviceId device) throws NoDataFoundException, TimeoutException,
 			IllegalArgumentException;
 
@@ -90,8 +81,8 @@ public interface AnalyzerInterface extends HealthCheck {
 	 * @throws IllegalArgumentException
 	 *             if {@code startTime, stopTime and/or device} is null
 	 */
-	public Double getArithmeticMeanByTime(Calendar startTime,
-			Calendar stopTime, DeviceId device) throws NoDataFoundException,
+	public Double getArithmeticMeanByTime(long startTime,
+			long stopTime, DeviceId device) throws NoDataFoundException,
 			TimeoutException, IllegalArgumentException;
 
 	/**
@@ -114,7 +105,7 @@ public interface AnalyzerInterface extends HealthCheck {
 	 * @throws IllegalArgumentException
 	 *             if {@code startTime, stopTime and/or device} is null
 	 */
-	public Double getMax(Calendar startTime, Calendar stopTime, DeviceId device)
+	public Double getMax(long startTime, long stopTime, DeviceId device)
 			throws NoDataFoundException, TimeoutException,
 			IllegalArgumentException;
 
@@ -138,7 +129,7 @@ public interface AnalyzerInterface extends HealthCheck {
 	 * @throws IllegalArgumentException
 	 *             if {@code startTime, stopTime and/or device} is null
 	 */
-	public Double getMin(Calendar startTime, Calendar stopTime, DeviceId device)
+	public Double getMin(long startTime, long stopTime, DeviceId device)
 			throws NoDataFoundException, TimeoutException,
 			IllegalArgumentException;
 
@@ -232,4 +223,84 @@ public interface AnalyzerInterface extends HealthCheck {
 	public double getCorrelationTwoDevices(DataSet xSet, DataSet ySet,
 			int numberOfPoints) throws TimeoutException, NoDataFoundException,
 			IllegalArgumentException;
+	
+	
+	
+	/**
+	 * Get weekly consumption of device
+	 * 
+	 * @param  String DeviceID
+	 * @param long unixTimeStamp
+	 * @param String WrapperTag	        
+	 *            
+	 * @return double value 
+	 */
+	
+	public double getWeeklyConsumption(String devId , String wrapperId , long unixTimeStamp) ;
+	
+	/**
+	 * Get daily consumption of device in whole week that contains the given date
+	 * 
+	 * @param DeviceID
+	 * @param Calendar date	 in Millis     
+	 * @param String WrapperTag	   
+	 * 
+	 * @return HashMap<Double,Long> value 
+	 */
+	public HashMap<Long,Double> getDailyCunsumptionOfWeek(String devId , String wrapperId , long unixTimeStamp);
+	
+	/**
+	 * Get  monthly consumption of device
+	 * 
+	 * @param DeviceID
+	 * @param Long date        
+	 * @param String WrapperTag	
+	 *            
+	 * @return double value 
+	 */
+	
+
+	public double getMonthlyConsumption(String devId , String wrapperId, long unixTimeStamp);
+
+	/**
+	 * Get daily consumption of device in whole Month that contains the given date
+	 * 
+	 * @param DeviceID
+	 * @param long  date	 in Millis       
+	 * @param String WrapperTag	   
+	 * 
+	 * @return HashMap<Double,Long> value 
+	 */
+	
+	public HashMap<Long,Double> getDailyCunsumptionOfMonth(String devId , String wrapperId , long unixTimeStamp);
+	
+	
+	/**
+	 * Get yearly consumption of device 
+	 * 
+	 * @param DeviceID 
+	 * @param String WrapperTag	
+	 * @param Long  date
+	 * 	        
+	 *            
+	 * @return double value 
+	 */
+	
+	public double getYearlyConsumption(String devId , String wrapperId,  long unixTimeStamp);
+	
+	
+	/**
+	 * Get monthly consumption of device in whole year that contains the given date
+	 * 
+	 * @param DeviceID
+	 * @param long date	 in Millis     
+	 * @param String WrapperTag	   
+	 * 
+	 * @return HashMap<Double,Long> value 
+	 */
+	public HashMap<Long,Double> getMonthlyCunsumptionOfYear(String devId , String wrapperId , long unixTimeStamp);
+	
+	
 }
+
+

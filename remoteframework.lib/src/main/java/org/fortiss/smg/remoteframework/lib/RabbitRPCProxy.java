@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.remoteframework.lib;
 
 import java.io.IOException;
@@ -20,8 +12,9 @@ import com.rabbitmq.client.ConnectionFactory;
 
 public class RabbitRPCProxy<T> extends GenericProxy<T> {
 
-	Connection connection;
-	ConnectionFactory factory = new ConnectionFactory();
+	
+	private ConnectionFactory factory = new ConnectionFactory();
+	private Connection connection;
 	
 	public RabbitRPCProxy(Class<T> klass, String queue, int timeout) {
 		super(klass, queue, timeout);
@@ -29,7 +22,7 @@ public class RabbitRPCProxy<T> extends GenericProxy<T> {
 
 	@Override
 	public T init() throws IOException, TimeoutException {
-
+		
 		connection = factory.newConnection();
 
 
@@ -47,10 +40,11 @@ public class RabbitRPCProxy<T> extends GenericProxy<T> {
 	public T initLoop() throws IOException {
 
 		connection = factory.newConnection();
-
+	
 
 		Channel channel = connection.createChannel();
 		JsonRpcClient client;
+		
 		while(true){
 			try {
 				client = new JsonRpcClient(channel, "", queue, timeout);

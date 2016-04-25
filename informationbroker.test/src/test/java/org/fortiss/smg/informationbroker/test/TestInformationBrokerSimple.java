@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.informationbroker.test;
 
 
@@ -40,6 +32,7 @@ public class TestInformationBrokerSimple {
 
 	//private InformationBrokerInterfaceForICTProject impl;
 	private PersistencyLog impl;
+	private PersistencyQuery implQuery;
 
 	@Configuration
 	public Option[] config() {
@@ -57,17 +50,23 @@ public class TestInformationBrokerSimple {
 
 	@Before
 	public void setUp() {
-		
+
 		String olddbConnectionString = "jdbc:mysql://localhost:3306/ses_open_database";
-    	String dbConnectionString = olddbConnectionString;
-    	String dbictprojectConnectionString = olddbConnectionString;
+		String dbConnectionString = olddbConnectionString;
+		
+		String queryOlddbConnectionString = "jdbc:mysql://localhost:3306/fortisstest";
+		String queryDbConnectionString = queryOlddbConnectionString;
+		String dbictprojectConnectionString = olddbConnectionString;
+		String quryDbictprojectConnectionString = olddbConnectionString;
 		String dbUser = "fortiss";
 		String dbPassword = "foo";
-		
-		
+
+
 		org.slf4j.Logger logger = LoggerFactory.getLogger(InformationBrokerActivator.class);
 		PersistencyDBUtil dbUtil = new PersistencyDBUtil(olddbConnectionString, dbConnectionString, dbictprojectConnectionString, dbUser, dbPassword, logger);
+		PersistencyDBUtil queryDbUtil = new PersistencyDBUtil(queryOlddbConnectionString, queryDbConnectionString, quryDbictprojectConnectionString, dbUser, dbPassword, logger);
 		impl = new PersistencyLog(dbUtil, null, logger);
+		implQuery = new PersistencyQuery(queryDbUtil, null, logger);
 	}
 
 	@After
@@ -88,17 +87,25 @@ public class TestInformationBrokerSimple {
 		Double maxRange = 25.0;
 		impl.onDoubleEventReceivedForICTProject(deviceRoom, hrName, devId, tech, devType, 
 				sensorOrActuator, minRange, maxRange);
-		
-		
+
+
 		//assertEquals(0, "");
-		
+
 
 		DeviceId testing = new DeviceId("a","b");
-		
+
 		//DeviceContainer test = new DeviceContainer(new DeviceId("a","b"), "c");
 		//test.setHrName("hello world");
-		
-		
+
+
 		//assertEquals("Hello smg",impl.doSomething("hi"));
+	}
+
+
+	@Test 
+	public void testLastSeen(){
+		String devId = "battery_temperature";
+		String wrapperId = "sma.sunny.wrapper.web";
+		System.out.println(implQuery.getLastseen(devId, wrapperId).toString());
 	}
 }

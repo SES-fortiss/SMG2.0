@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 /**
  * 
  */
@@ -70,8 +62,8 @@ public class GamificationStatistics {
 
 	@POST
 	@Path("/users/points/{userID}/{pts}")
-	public boolean addPointsToGamificationUser(
-			@PathParam("userID") String userID, @PathParam("pts") String pts) {
+	public boolean addPointsToGamificationUser (
+			@PathParam("userID") String userID, @PathParam("pts") String pts)  throws TimeoutException  {
 
 		boolean isSuccessful;
 
@@ -86,7 +78,7 @@ public class GamificationStatistics {
 	@Path("/question/{userID}/{questionID}/{answer}")
 	public boolean answerOpenQuestionForUser(@PathParam("userID") int userID,
 			@PathParam("questionID") int questionID,
-			@PathParam("answer") int answer) {
+			@PathParam("answer") int answer) throws TimeoutException {
 
 		boolean isAnswered;
 		isAnswered = BundleFactory.getGamification().answerOpenQuestionForUser(
@@ -98,7 +90,7 @@ public class GamificationStatistics {
 	@GET
 	@Path("/createSingleGamificationUser")
 	public String createSingleGamificationUser(@QueryParam("uid") int userID,
-			@QueryParam("name") String name) {
+			@QueryParam("name") String name) throws TimeoutException {
 
 		BundleFactory.getGamification().createSingleGamificationUser(userID,
 				name);
@@ -169,9 +161,9 @@ public class GamificationStatistics {
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/users")
-	public Map<Integer, SingleGamificationUser> getUsers() {
+	public Map<String, SingleGamificationUser> getUsers() {
 
-		Map<Integer, SingleGamificationUser> users = BundleFactory
+		Map<String, SingleGamificationUser> users = BundleFactory
 				.getGamification().getGamificationUsers();
 		return users;
 
@@ -180,10 +172,16 @@ public class GamificationStatistics {
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/groups")
-	public Map<Integer, GamificationGroup> getGroups() {
+	public Map<String, GamificationGroup> getGroups()  throws TimeoutException  {
 
-		Map<Integer, GamificationGroup> groups = BundleFactory
-				.getGamification().getGamificationGroups();
+		Map<String, GamificationGroup> groups = null;
+		try {
+			groups = BundleFactory
+					.getGamification().getGamificationGroups();
+		} catch (TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return groups;
 
 	}

@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.analyzer.impl.databaseConnection;
 
 import java.sql.SQLException;
@@ -157,7 +149,7 @@ public class DatabaseRequestor {
 			stopDataSet.setTimeInMillis(startDataSet.getTimeInMillis());
 			stopDataSet.add(timeSpan, amount);
 			// creates a new dataSet
-			DataSet dataSet = new DataSet(startDataSet, stopDataSet, deviceID);
+			DataSet dataSet = new DataSet(startDataSet.getTimeInMillis(), stopDataSet.getTimeInMillis(), deviceID);
 			// fills dataSet with data
 			try {
 				DatabaseRequestor.fetchesDataSet(dataSet, broker);
@@ -187,7 +179,6 @@ public class DatabaseRequestor {
 		}
 		return allDataSets;
 	}
-
 	// TODO: implement a new allAvailableData method which supports this
 	// heading:
 	/*
@@ -228,9 +219,7 @@ public class DatabaseRequestor {
 		}
 		List<DoublePoint> fetchList = new ArrayList<DoublePoint>();
 		try {
-			fetchList = broker.getDoubleValue(data.getDeviceId(), data
-					.getStartDate().getTimeInMillis(), data.getStopDate()
-					.getTimeInMillis());
+			fetchList = broker.getDoubleValue(data.getDeviceId(), data.getStartDate(), data.getStopDate());
 		} catch (TimeoutException e) {
 			logger.warn("fetchesDataSet: Timeout: If trying to fetch a large amount of data correct the timeout value of DefaultProxy<InformationBrokerInterface> in AnalyzerActivator. "
 					+ e.getMessage());
@@ -240,8 +229,8 @@ public class DatabaseRequestor {
 		if (fetchList == null || fetchList.isEmpty()) {
 			logger.warn("fetchesDataSet: fetched an empty list for Device "
 					+ data.getDeviceId() + " from "
-					+ data.getStartDate().getTime() + " to "
-					+ data.getStopDate().getTime() + " - returning null");
+					+ data.getStartDate()+ " to "
+					+ data.getStopDate() + " - returning null");
 			throw new SQLException("no data found in database");
 		}
 		Collections.reverse(fetchList);

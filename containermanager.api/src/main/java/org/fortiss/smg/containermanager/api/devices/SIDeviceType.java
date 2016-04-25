@@ -1,13 +1,6 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.containermanager.api.devices;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
@@ -64,11 +57,12 @@ public enum SIDeviceType {
 	public SIUnitType getType() {
 		return type;
 	}
-
-	  public static SIDeviceType fromString(String text) {
+	
+	@JsonCreator
+	public static SIDeviceType fromString(String text) {
 		    if (text != null) {
 		      for (SIDeviceType b : SIDeviceType.values()) {
-		        if (text.equals(b.name())) {
+		        if (text.toLowerCase().equals(b.name().toLowerCase())) {
 		          return b;
 		        }
 		      }

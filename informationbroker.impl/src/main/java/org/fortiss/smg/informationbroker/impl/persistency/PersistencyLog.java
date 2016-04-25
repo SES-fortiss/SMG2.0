@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.informationbroker.impl.persistency;
 
 import java.sql.PreparedStatement;
@@ -279,7 +271,10 @@ public class PersistencyLog implements IActuatorListener , InformationBrokerInte
 
 					duplicate.close();
 */
+			
 			try{
+					
+				
 					PreparedStatement query = dbUtil
 							.getCon()
 							.prepareStatement(
@@ -299,15 +294,13 @@ public class PersistencyLog implements IActuatorListener , InformationBrokerInte
 					logger.debug("received new double event. logging to Database "
 							+ dev + "Val: "+ev.getValue() );
 					query.close();
-			/*	} else {
 
-					duplicate.close();
-				}
-		*/
 			} catch (SQLException e) {
 				closeDBConnetion();
 				logger.warn("SQL Statement error", e);
 			}
+								
+
 		} else {
 			logger.error("Event discarded: doubleEvent({},{})",
 					dev, ev.getValue());

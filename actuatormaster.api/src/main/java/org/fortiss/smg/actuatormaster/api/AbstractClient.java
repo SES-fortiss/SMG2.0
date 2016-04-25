@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatormaster.api;
 
 import java.io.IOException;
@@ -46,10 +38,15 @@ public abstract class AbstractClient extends AbstractConnector {
 		// for(int i=0; i<100; i++){
 
 		try {
+			while (master == null) {
+				waitOrIsKilled();
+			}
+			
 			while (!master.isRegisteredClient(name)) {
 				clientId = master.registerClient(name);
 				waitOrIsKilled();
 				break;
+					
 			}
 		} catch (TimeoutException e) {
 			alogger.error(this.name + ": Unable to connect to master");

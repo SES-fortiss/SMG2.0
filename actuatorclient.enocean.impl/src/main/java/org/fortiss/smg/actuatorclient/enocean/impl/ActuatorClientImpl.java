@@ -33,14 +33,14 @@ public class ActuatorClientImpl implements IActuatorClient {
 	private String wrapperTag;
 	// private EnOceanCommunicator communicator;
 	ArrayList<String> enOceanDeviceIds = new ArrayList<String>();
-	
-	
+
+
 	ArrayList<DeviceContainer> devices = new ArrayList<DeviceContainer>();
 
 	private EnOceanLooper looper;
-	
+
 	public ActuatorClientImpl(String host, int port, String wrapperTag, int pollFreq) {
-		
+
 		this.wrapperTag = wrapperTag;
 		this.pollFrequency = pollFreq;
 		this.port = port;
@@ -55,9 +55,9 @@ public class ActuatorClientImpl implements IActuatorClient {
 
 	public synchronized void activate() {
 		sendNewDeviceEvents();
-//		 executor = Executors.newSingleThreadScheduledExecutor();
-//		 executor.scheduleAtFixedRate(looper, 0, getPollFrequency(),
-//		 TimeUnit.SECONDS);
+		//		 executor = Executors.newSingleThreadScheduledExecutor();
+		//		 executor.scheduleAtFixedRate(looper, 0, getPollFrequency(),
+		//		 TimeUnit.SECONDS);
 	}
 
 	public synchronized void deactivate() {
@@ -109,64 +109,62 @@ public class ActuatorClientImpl implements IActuatorClient {
 	public List<String> getAvailableActorStrategies() {
 		List<String> classNames = new ArrayList<String>();
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.FortissBlindActorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.FortissBlindActorStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.Light1030ActorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.Light1030ActorStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.Light5070ActorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.Light5070ActorStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.HeatingActorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.HeatingActorStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.SteckdosenleisteActorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.SteckdosenleisteActorStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.GenericPushRelease1030SwitchActorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.actor.GenericPushRelease1030SwitchActorStrategy");
 		return classNames;
 	}
 
 	public List<String> getAvailableSensorStrategies() {
 		List<String> classNames = new ArrayList<String>();
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.BSCsOTSSensorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.BSCsOTSSensorStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FAH60SensorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FAH60SensorStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FBH55SensorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FBH55SensorStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FT4DoubleRockerBooleanSensorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FT4DoubleRockerBooleanSensorStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FT4SingleRockerStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FT4SingleRockerStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FTKSensorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FTKSensorStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FTR55DSensorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FTR55DSensorStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FWZ12SensorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.FWZ12SensorStrategy");
 		classNames
-				.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.SystestSensorStrategy");
+		.add("org.fortiss.smg.actuatorclient.enocean.impl.model.strategies.sensor.SystestSensorStrategy");
 		return classNames;
 	}
-//
-//	public ArrayList<DeviceContainer> getDevices() {
-//		return devices;
-//	}
-	
+	//
+	//	public ArrayList<DeviceContainer> getDevices() {
+	//		return devices;
+	//	}
+
 
 	@Override
 	public void onDoubleCommand(DoubleCommand command, DeviceId dev) {
 		logger.debug("Received Doublecommand for " + dev.getDevid());
-//	for (DeviceContainer device : devices) {
-//			if(device.getDeviceId().equals(dev)) {
-//				//if (device.getHrName().equals("Steckdosenleiste")) {
-//					boolean valueBool = true;
-//					if (command.getValue() == 0.0) {
-//						valueBool = false;
-//					}
-//					//looper.getActor("Steckdosenleiste").setBoolean(valueBool, dev.toContainterId(), 0, "", true, "");
-//				//}
-//				
-//			}
-//		}
-
+		for (DeviceContainer device : devices) {
+			if(device.getDeviceId().equals(dev)) {
+				if(device.isBinary()){
+					boolean valueBool = true;
+					if (command.getValue() == 0.0) {
+						valueBool = false;
+					}
+					this.looper.getActor(dev.toString()).setBoolean(valueBool, dev.toString(), 0, "", true, "");
+				}
+			}
+		}
 	}
 
 	private void sendNewDeviceEvents() {
@@ -180,7 +178,6 @@ public class ActuatorClientImpl implements IActuatorClient {
 						+ " to master");
 			}
 		}
-		
 	}
 
 	public void setMaster(IActuatorMaster master) {
@@ -198,11 +195,11 @@ public class ActuatorClientImpl implements IActuatorClient {
 	public void setWrapperTag(String wrapperTag) {
 		this.wrapperTag = wrapperTag;
 	}
-//////////////// I add it !
-//	public void setEnoceanDeviceIds(DeviceId devId){
-//		enOceanDeviceIds.add(devId.toString());
-//	}
-	
+	//////////////// I add it !
+	//	public void setEnoceanDeviceIds(DeviceId devId){
+	//		enOceanDeviceIds.add(devId.toString());
+	//	}
+
 	public ArrayList<String> getEnOceanDeviceIds() {
 		return enOceanDeviceIds;
 	}

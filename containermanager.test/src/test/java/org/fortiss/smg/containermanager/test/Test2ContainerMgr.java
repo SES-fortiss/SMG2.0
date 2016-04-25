@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.containermanager.test;
 
 import static org.junit.Assert.assertEquals;
@@ -13,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeoutException;
 
 import org.fortiss.smg.actuatormaster.api.events.DoubleEvent;
 import org.fortiss.smg.containermanager.api.devices.Container;
@@ -86,7 +79,7 @@ public class Test2ContainerMgr {
 	}
 	
 	@Test
-	public void test(){
+	public void test() throws TimeoutException{
 		ContainerManagerImpl impl = simpleTree();
 		assertNotNull(impl.getContainer("1"));
 		assertEquals(Double.NaN, root.getMean(s3.getDeviceType()), 0.01);

@@ -1,9 +1,1 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.#bundle#.impl;import org.fortiss.smg.#bundle#.api.#Bundle#Interface;import org.fortiss.smg.#bundle#.api.#Bundle#QueueNames;import org.osgi.framework.BundleActivator;import org.osgi.framework.BundleContext;import org.osgi.framework.ServiceRegistration;import org.fortiss.smg.remoteframework.lib.DefaultServer;import org.slf4j.LoggerFactory;public class #Bundle#Activator implements BundleActivator {    DefaultServer<#Bundle#Interface> server;    #Bundle#Impl impl;    // Logger from sl4j    private static org.slf4j.Logger logger = LoggerFactory.getLogger(#Bundle#Activator.class);    @Override    public void start(BundleContext context) throws Exception {        // register here your services etc.        // DO NOT start heavy operations here - use threads        impl = new #Bundle#Impl();        server = new DefaultServer<#Bundle#Interface>(#Bundle#Interface.class, impl, #Bundle#QueueNames.get#Bundle#InterfaceQueue());        server.init();        logger.info("#Bundle# is alive");    }    @Override    public void stop(BundleContext context) throws Exception {        // REMEMBER to destroy all resources, threads and do cleanup        server.destroy();        logger.info("#Bundle# is dead");    }}

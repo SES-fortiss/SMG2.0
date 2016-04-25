@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.gamification.api;
 
 import java.util.Map;
@@ -18,7 +10,7 @@ public interface GamificationInterface extends HealthCheck {
     String doSomething(String arg) throws TimeoutException;
     
     //creates a new gamification user
-    public void createSingleGamificationUser(int userManagerID, String name);
+    public void createSingleGamificationUser(int userManagerID, String name) throws TimeoutException;
     
     //removes a gamification user
     public boolean removeSingleGamificationUser(int userManagerID);
@@ -30,16 +22,16 @@ public interface GamificationInterface extends HealthCheck {
     public boolean removeGamificationGroup(int id);
     
     //adds points to a gamification user
-    public boolean addPointsToGamificationUser(int userManagerID, int points);
+    public boolean addPointsToGamificationUser(int userManagerID, int points) throws TimeoutException;
 
     //adds points to a gamification group
     public boolean addPointsToGamificationGroup(int groupID, int points);
     
     //returns copies(!) of all gamification users
-    public Map<Integer,SingleGamificationUser> getGamificationUsers();
+    public Map<String, SingleGamificationUser> getGamificationUsers();
     
     //returns copies(!) of all gamification groups
-    public Map<Integer,GamificationGroup> getGamificationGroups();
+    public Map<String,GamificationGroup> getGamificationGroups() throws TimeoutException;
     
     //adds the user with "userManagerID" to the group with "groupID"
     public boolean addGamificationUserToGroup(int userManagerID, int groupID);
@@ -73,11 +65,11 @@ public interface GamificationInterface extends HealthCheck {
 	
     //returns all the single gamification user with an edited score consisting
     //only of the points that were scored between the start- and the stopTimeStamp
-    public Map<Integer,SingleGamificationUser> getGamificationUsersFilterScore(long startTimestamp, long endTimeStamp);
+    public Map<String, SingleGamificationUser> getGamificationUsersFilterScore(long startTimestamp, long endTimeStamp);
 
     //returns all gamificationGroups with an edited score consisting
     //only of the points that were scored between the start- and the stopTimeStamp
-    public Map<Integer,GamificationGroup> getGamificationGroupsFilterScore(long startTimestamp, long endTimeStamp);
+    public Map<String, GamificationGroup> getGamificationGroupsFilterScore(long startTimestamp, long endTimeStamp);
     
 	//returns all Properties the participant fulfills
 	//the second parameter specifies if the participant is a group or a single user
@@ -108,7 +100,7 @@ public interface GamificationInterface extends HealthCheck {
 	//the function does NOT return the correctness of the answer.
 	//In order to see whether the answer is correct one can check the QuizQuestion object
 	//in which the correct answer is saved
-	public boolean answerOpenQuestionForUser(int userManagerID, int questionID, int answer);
+	public boolean answerOpenQuestionForUser(int userManagerID, int questionID, int answer) throws TimeoutException;
     
 	
 	//gets all devices that are available in gamification context (ny now only hexabusses)

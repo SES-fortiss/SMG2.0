@@ -1,26 +1,19 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.webrest.impl.jersey;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.fortiss.smg.ambulance.api.AmbulanceInterface;
 import org.fortiss.smg.ambulance.api.AmbulanceQueueNames;
+import org.fortiss.smg.ambulance.api.HealthCheck;
 import org.fortiss.smg.remoteframework.lib.DefaultProxy;
 import org.fortiss.smg.webrest.api.WebRestQueueNames;
 import org.fortiss.smg.webrest.impl.BundleFactory;
-import org.mortbay.jetty.servlet.ServletHolder;
 
-import com.sun.jersey.spi.container.servlet.ServletContainer;
+//import com.sun.jersey.spi.container.servlet.ServletContainer;
 
-public class MainServerControl extends ServerController {
+public class MainServerControl extends ServerController implements HealthCheck {
 
 	public void start(int port) {
 		super.start(port, new ServletHolder(new URIServletContainer(
@@ -48,6 +41,12 @@ public class MainServerControl extends ServerController {
 		MainServerControl serverREST = new MainServerControl();
 		serverREST.start(8091);
 
+	}
+
+	@Override
+	public boolean isComponentAlive() throws TimeoutException {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 }

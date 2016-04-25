@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatormaster.impl;
 
 import java.io.IOException;
@@ -56,21 +48,21 @@ public class ActuatorMasterImpl implements IActuatorMaster {
 	private static org.slf4j.Logger logger = LoggerFactory
 			.getLogger(ActuatorMasterImpl.class);
 
-	private static ExecutorService executors = Executors
-			.newFixedThreadPool(512);
+	private static ExecutorService executors; // = Executors.newFixedThreadPool(512);
 
 	static WrapperConfigManager wrapperConfigManager = WrapperConfigManager
 			.getInstance();
 
-	public ActuatorMasterImpl() {
+	public ActuatorMasterImpl(String configpath) {
 
 		clients = new ConcurrentHashMap<String, String>();
 		notRespondingClients = new ConcurrentHashMap<String, Integer>();
 		listeners = new ConcurrentHashMap<String, String>();
 		latestEvents = new ArrayDeque<Triple<DeviceId, DoubleEvent, Long>>();
 		registeredDevices = new ConcurrentHashMap<String, ArrayList<DeviceContainer>>();
-		executors = Executors.newFixedThreadPool(256);
-		// executors = Executors.newCachedThreadPool();
+		//executors = Executors.newFixedThreadPool(256);
+		executors = Executors.newCachedThreadPool();
+		wrapperConfigManager.setConfigPath(configpath);
 	}
 
 	@Override
@@ -125,14 +117,13 @@ public class ActuatorMasterImpl implements IActuatorMaster {
 				logger.info("Healthcheck for " + queue + " failed. Nullpointer");
 				recover = checkNotRespondingClients(queue);
 				bFlag = false;
-			} finally {
+			}
 				try {
 					healthCheck.destroy();
 				} catch (IOException e) {
 					logger.info("Unable to close con. for queue:" + queue);
 					bFlag = false;
 				}
-			}
 			if (bFlag == false && recover == true) {
 				/**
 				 * Restore wrapper config of faulty component (actuatorclient)
@@ -242,12 +233,11 @@ public class ActuatorMasterImpl implements IActuatorMaster {
 		}
 	}
 
-	// copying code is inherently bad
 	@Override
 	public void sendDoubleEvent(final DoubleEvent ev, final DeviceId dev,
 			final String client) throws TimeoutException {
 		
-		logger.debug("Doubleevent " + ev.getValue() + " from:" + dev.getDevid()
+		logger.info("Doubleevent " + ev.getValue() + " from:" + dev.getDevid()
 				+ ", Wrapper: " + dev.getWrapperId());
 
 		for (final String queue : listeners.keySet()) {
@@ -265,14 +255,14 @@ public class ActuatorMasterImpl implements IActuatorMaster {
 
 					} catch (TimeoutException e) {
 						logger.info("Timeout for " + queue + ".");
-					} finally {
-						try {
+					}
+					try {
 							listenerProxy.destroy();
+							
 
-						} catch (IOException e) {
+					} catch (IOException e) {
 							logger.info("Unable to close con. for queue:"
 									+ queue);
-						}
 					}
 					try {
 						this.finalize();
@@ -336,10 +326,12 @@ public class ActuatorMasterImpl implements IActuatorMaster {
 
 					} catch (TimeoutException e) {
 						logger.info("Timeout for " + queue + ".");
-					} finally {
+					} 
+					
 						try {
 							listenerProxy.destroy();
 							this.finalize();
+							
 
 						} catch (IOException e) {
 							logger.info("Unable to close con. for queue:"
@@ -348,7 +340,7 @@ public class ActuatorMasterImpl implements IActuatorMaster {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					}
+					
 				}
 			};
 
@@ -391,6 +383,7 @@ public class ActuatorMasterImpl implements IActuatorMaster {
 	public ArrayList<WrapperConfig> getWrapperConfig(String key)
 			throws TimeoutException {
 		if (wrapperConfigManager != null) {
+			logger.info("requesting config for key: " + key);
 			return wrapperConfigManager.getConfig(key);
 		} else {
 			return new ArrayList<WrapperConfig>();

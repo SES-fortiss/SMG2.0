@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 //  The contents of this file are subject to the Mozilla Public License
 //  Version 1.1 (the "License"); you may not use this file except in
 //  compliance with the License. You may obtain a copy of the License

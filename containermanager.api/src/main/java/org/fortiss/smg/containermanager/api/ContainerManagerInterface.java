@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.containermanager.api;
 
 import java.util.ArrayList;
@@ -43,14 +35,14 @@ public interface ContainerManagerInterface extends HealthCheck {
 	 * @param id
 	 * @return List<Entry<Container,EdgeType>> or an empty List
 	 */
-	public List<Entry<Container, EdgeType>> getChildrenWithEdgeTypes(String id);
+	public List<Entry<Container, EdgeType>> getChildrenWithEdgeTypes(String id) throws TimeoutException;;
 	
 	/**
 	 * This method returns a DeviceContainer for a given DeviceId Object or null
 	 * @param id
 	 * @return DeviceContainer or null
 	 */
-	public DeviceContainer getDeviceContainer(DeviceId id);
+	public DeviceContainer getDeviceContainer(DeviceId id) throws TimeoutException;;
 	
 	/**
 	 * Returns a list of Device Spec Data (by a Google Device Code)
@@ -96,7 +88,7 @@ public interface ContainerManagerInterface extends HealthCheck {
 	 * @return Container or null
 	 * @throws Exception
 	 */
-	public Container getContainer(String id) throws Exception;
+	public Container getContainer(String id) throws TimeoutException;
 	
 	/**
 	 * this method returns the one ContainerId (parent) which is connected to the given containerId (child)
@@ -265,20 +257,18 @@ public interface ContainerManagerInterface extends HealthCheck {
 	 * 
 	 * @param command
 	 * @param id
-	 * @throws TimeoutException
 	 */
-	//TODO probably instead of the object also the uniquie containerId could be used
+	//TODO probably instead of the object devId also the uniquie containerId could be used
 	public void sendCommand(DoubleCommand command, DeviceId id) throws TimeoutException;
 	
-	
-	public void sendCommand(DoubleCommand command, String containerId, SIDeviceType type) throws TimeoutException;
+	public void sendCommandToContainer(DoubleCommand command, String containerId, SIDeviceType type) throws TimeoutException;
 	
 	
 	/**
 	 * Request which DeviceTypes are considered reasonable for providing a Sum
 	 * @return List of of DeviceTypes (as String)
 	 */
-	public List<String> getReasonableTypeForSum();
+	public List<String> getReasonableTypeForSum() throws TimeoutException;
 	/*
 	 * get Statistical Information
 	 * is it better to provide single Values or a list 

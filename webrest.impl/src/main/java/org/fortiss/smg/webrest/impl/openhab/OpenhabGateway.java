@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.webrest.impl.openhab;
 
 import java.util.List;
@@ -13,6 +5,7 @@ import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -21,21 +14,32 @@ import javax.ws.rs.core.MediaType;
 import org.fortiss.smg.webrest.impl.BundleFactory;
 import org.fortiss.smg.webrest.impl.ParametersNotValid;
 import org.apache.commons.math3.util.Pair;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.fortiss.smg.containermanager.api.ContainerManagerInterface;
 import org.fortiss.smg.containermanager.api.devices.Container;
 import org.fortiss.smg.containermanager.api.devices.ContainerEdge;
 import org.fortiss.smg.containermanager.api.devices.DeviceContainer;
 import org.fortiss.smg.containermanager.api.devices.DeviceId;
+import org.fortiss.smg.containermanager.api.devices.SIDeviceType;
 import org.fortiss.smg.informationbroker.api.DoublePoint;
 import org.fortiss.smg.smgschemas.commands.DoubleCommand;
 import org.fortiss.smg.webrest.impl.BundleFactory;
+import org.fortiss.smg.webrest.impl.front.ContainerManagement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 
 /**
  * 
  * @author Noha Khater
+ * @editor Sajjad Taheri
+ * @editor Markus Duchon
  *
- */
+*/
 @Path("/openhab")
 public class OpenhabGateway {
 
@@ -50,41 +54,147 @@ public class OpenhabGateway {
 	 * @return
 	 */
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	@Path("/items/{itemname}/state")
-	public static List<DoublePoint> getState(
-			@PathParam("itemname") String ContainerID) {
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN })
+	@Path("/items/{itemname}/type/{type}")		
+	public static double getState(
+			@PathParam("itemname") String ContainerID, @PathParam("type") SIDeviceType type) {
+		ContainerManagement containerManager = new ContainerManagement();
 		System.out.println("openHAB is getting a state and a container ID with: " + ContainerID);
 		
 		// getting the wrapper & device ID
 		String[] split = ContainerID.split("\\.");
-		System.out.println("openHAB is getting a state and a container DEVID with: " + split[0]);
+		if (split.length > 1) {
+		logger.debug("openHAB is getting a state and a container DEVID with: " + split[0]);
 		String devID = split[2];
-		System.out.println("openHAB is getting a state and a container DEVID with: " + devID);
+		logger.debug("openHAB is getting a state and a container DEVID with: " + devID);
 		String wrapperID = split[0] + "." + split[1];
-		System.out.println("openHAB is getting a state and a container WRAPPERID with: " + wrapperID);
+		logger.debug("openHAB is getting a state and a container WRAPPERID with: " + wrapperID);
 		DeviceId deviceID = new DeviceId(devID, wrapperID);
-		System.out.println("openHAB is getting a state and a container DEVICEID with: " + deviceID);
-		List<DoublePoint> doubleDataPt;
+		logger.debug("openHAB is getting a state and a container DEVICEID with: " + deviceID);
+		}
+		// Else: probably a container   
+//		List<DoublePoint> doubleDataPt;
+//		try {
+//			return doubleDataPt = BundleFactory.getInformationBroker()
+//					.getDoubleValue(deviceID, 1, 1);
+//		} catch (TimeoutException e) {
+//			logger .info("No connection?", e.fillInStackTrace());
+//			throw new ParametersNotValid("Unable to connect to InformationBroker");
+//		}
+		
+		double doubleDataPt2;
 		try {
-			return doubleDataPt = BundleFactory.getInformationBroker()
-					.getDoubleValue(deviceID, 1, 1);
+			return containerManager.getMean(ContainerID, type);
+		
 		} catch (TimeoutException e) {
-			logger .info("No connection?", e.fillInStackTrace());
-			throw new ParametersNotValid("Unable to connect to InformationBroker");
+			logger.info("No connection?", e.fillInStackTrace());
+			throw new ParametersNotValid("Unable to connect to ContainerManager");
 		}
 		
-		/*try {
-			return BundleFactory.getContainerManager().getContainer(ContainerID).getMean(SIDeviceType.LightSimple);
-		} catch (Exception e) {
+	}
+
+	
+	/**
+	 * Retrieves the current state of a device
+	 * 
+	 * @param deviceContainerID
+	 *            : the the device container ID (wrapperID.deviceID)
+	 * @return
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN  })
+	@Path("/items/{itemname}/{type}")		
+	public static String getCurrentState(
+			@PathParam("itemname") String ContainerID, @PathParam("type") SIDeviceType type) {
+		ContainerManagement containerManager = new ContainerManagement();
+		logger.debug("openHAB is getting a state and a container ID with: " + ContainerID);
+		
+
+		String[] split = ContainerID.split("\\.");
+		String devID = "key";
+		if (split.length > 1) {
+			devID = split[2];
+		}
+		
+		
+		JSONObject result = new JSONObject();
+		
+		Double value = 0.0;
+		
+		try {
+			value = containerManager.getCurrentValueByType(ContainerID, type);
+			
+			if (Double.isNaN(value)) {
+				result.put(devID, 0.0);
+			}
+			else {
+				result.put(devID, value);
+			}
+		} catch (TimeoutException e) {
+			logger.info("No connection?", e.fillInStackTrace());
+			throw new ParametersNotValid("Unable to connect to ContainerManager");
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return -1;
-		//.getValue();*/
-		//return String.valueOf(BundleFactory.getContainerManager().getDeviceContainer(deviceID).getValue());
+		
+		
+		
+		return result.toString();
+		
 	}
+	
+	
+	/**
+	 * Retrieves the current state of a device
+	 * 
+	 * @param deviceContainerID
+	 *            : the the device container ID (wrapperID.deviceID)
+	 * @return
+	 */
+	@GET
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+	@Path("/items/{itemname}")
+	public static String getAllStates(@PathParam("itemname") String ContainerID) {
+		ContainerManagement containerManager = new ContainerManagement();
+		logger.debug("openHAB is getting a state and a container ID with: " + ContainerID);
 
+		
+//		String[] types = { "Brightness", "Temperature", "Occupancy", "ConsumptionPowermeter", "Window", "ProductionPowermeter", "Battery"};
+
+		String[] types = { "ConsumptionPowermeter", "ProductionPowermeter", "Battery"};
+
+		
+		JSONObject result = new JSONObject();
+		
+		
+		try {
+			
+			for (String type : types) {
+				SIDeviceType t = SIDeviceType.fromString(type);
+				
+				double value = containerManager.getMean(ContainerID, t);
+				if (Double.isNaN(value)) {
+					result.put(type.toLowerCase(), 0.0);
+				}
+				else {
+					result.put(type.toLowerCase(), value);
+				}
+			}
+		
+		} catch (TimeoutException e) {
+			logger.info("No connection?", e.fillInStackTrace());
+			throw new ParametersNotValid("Unable to connect to ContainerManager");
+		} catch (JSONException e	) {		// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result.toString();
+		//return "Hello world";
+		
+	}
+	
+	
+	
 	/**
 	 * Changes the state of a device to the input desired value. Returns true if
 	 * the command was a success, false otherwise.
@@ -101,25 +211,16 @@ public class OpenhabGateway {
 
 		// getting the wrapper & device ID
 				String[] split = deviceContainerID.split("\\.");
-				System.out.println("openHAB is getting a state and a container DEVID with: " + split[0]);
+				logger.debug("openHAB is getting a state and a container DEVID with: " + split[0]);
 				String devID = split[2];
-				System.out.println("openHAB is getting a state and a container DEVID with: " + devID);
+				logger.debug("openHAB is getting a state and a container DEVID with: " + devID);
 				String wrapperID = split[0] + "." + split[1];
-				System.out.println("openHAB is getting a state and a container WRAPPERID with: " + wrapperID);
+				logger.debug("openHAB is getting a state and a container WRAPPERID with: " + wrapperID);
 				DeviceId deviceID = new DeviceId(devID, wrapperID);
-				System.out.println("openHAB is getting a state and a container DEVICEID with: " + deviceID);
+				logger.debug("openHAB is getting a state and a container DEVICEID with: " + deviceID);
 
-		Double currentValue = BundleFactory.getContainerManager()
-				.getDeviceContainer(deviceID).getValue();
-		//Double newValue = Double.parseDouble(value);
-
-		// check if the current value is already the desired value
-		if (currentValue == newValue) {
-			logger.info("No change required. Value of device ("
-					+ deviceContainerID + ") is already " + newValue);
-			return true;
-		}
-
+		Double currentValue = -1.0;
+		
 		try {
 			// getting the device container
 			DeviceContainer devCont = BundleFactory.getContainerManager()
@@ -187,5 +288,6 @@ public class OpenhabGateway {
 			return null;
 		}
 	}
+	
 
 }

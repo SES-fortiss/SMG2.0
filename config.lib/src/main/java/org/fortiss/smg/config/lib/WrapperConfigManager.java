@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.config.lib;
 
 import java.io.BufferedReader;
@@ -35,7 +27,7 @@ public class WrapperConfigManager {
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(WrapperConfigManager.class);
     
 	
-	String fileName = "/opt/felix/wrapperconfig.xml";
+	String fileName = "/opt/smg2/wrapperconfig.xml";
 	
 	
 
@@ -47,40 +39,30 @@ public class WrapperConfigManager {
 	static WrapperConfigManager instance = new WrapperConfigManager();
 	
 	public WrapperConfigManager() {
-		/*InputStream is = WrapperConfigManager.class.getResourceAsStream("/wrapperconfig.xml");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder out = new StringBuilder();
-        String line;
-        try {
-			while ((line = reader.readLine()) != null) {
-			    out.append(line);
-			}
-			System.out.println(out.toString());   //Prints the string content read from input stream
-	        reader.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-        
-		
 		
 		String os = System.getProperty("os.name");
 		if (os != null && os.startsWith("Windows")) {
-			fileName = "c:/opt/felix/wrapperconfig.xml";
+			fileName = "c:/opt/smg2/wrapperconfig.xml";
 		}
-		System.out.println(fileName);
 		/*
 		 * Config Structure 
 		 * allowmultiple (true): one wrapper can handle more devices/configs with the same key
 		 */
-		parseConfig();
+		
 	}
 	
 	public static WrapperConfigManager getInstance() {
 		return instance;
 	}
 	
+	public void setConfigPath(String path) {
+		fileName = path;
+		parseConfig();
+	}
+	
 	private void parseConfig() {
+		System.out.println(fileName);
+		
 		try {
 			File fXmlFile = new File(fileName);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -160,6 +142,7 @@ public class WrapperConfigManager {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println(wrapperConfigList.size());
 	}
 
 

@@ -5,6 +5,18 @@
 </general>
 <wrapperlist>
 <wrapper>
+        <key>dummy</key>
+        <wrapperid>dummy.wrapper</wrapperid>
+        <wrappername>smg-client-dummy</wrappername>
+        <protocol>http</protocol>
+        <host>localhost</host>
+        <port></port>
+        <path></path>
+        <username></username>
+        <password></password>
+        <pollingfrequency>10</pollingfrequency>
+</wrapper>
+<wrapper>
 	<key>siemens</key>
 	<wrapperid>siemens211.wrapper</wrapperid>
 	<wrappername>smg-client-siemens-211</wrappername>
@@ -134,6 +146,18 @@
 			<pin>3</pin>
 		</subdevice>
 	</subdevices>
+</wrapper>
+<wrapper>
+	<key>enocean</key>
+	<wrapperid>enoceanUSB.wrapper</wrapperid>
+	<wrappername>smg-client-enocean</wrappername>
+	<protocol>usb</protocol>
+	<host>USB</host>
+	<port>0</port>
+	<path>/dev/ttyUSB0</path>
+	<username></username>
+	<password></password>
+	<pollingfrequency>10</pollingfrequency>
 </wrapper>
 <wrapper>
 	<key>enocean</key>

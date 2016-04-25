@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.remoteframework.lib;
 
 import java.io.IOException;
@@ -25,9 +17,9 @@ public abstract class GenericProxy<T> {
 	}
 
 	public abstract T init() throws IOException, TimeoutException;
+	
 	public abstract T initLoop() throws IOException;
-	
-	
+		
 	public abstract void destroy() throws IOException;
 
 	

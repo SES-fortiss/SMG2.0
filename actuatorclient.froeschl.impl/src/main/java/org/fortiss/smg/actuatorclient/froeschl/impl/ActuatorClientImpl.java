@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.froeschl.impl;
 
 import java.io.IOException;
@@ -167,7 +159,18 @@ public class ActuatorClientImpl implements IActuatorClient {
 					devices.add(device);	
 					deviceCounter++;
 				}
-				System.out.println(devices.size());
+				//Aggregated Daily Value
+				deviceSpec = containerManagerClient.getDeviceSpecData(124);
+				if (deviceSpec != null) {
+				
+					DeviceContainer device = new DeviceContainer(new org.fortiss.smg.containermanager.api.devices.DeviceId(
+					"FroeschlDailyEnergyConsumption", wrapperTagN), wrapperTagN,  deviceSpec); 
+					device.setVirtualContainer(virtual);
+					devices.add(device);	
+					deviceCounter++;
+				}
+				
+				System.out.println("This is the number of devices for Froeschl " + devices.size());
 			}
 			
 

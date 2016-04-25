@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.gamification.api;
 
 import java.util.HashMap;
@@ -13,7 +5,7 @@ import java.util.HashMap;
 public class GamificationGroup extends GamificationParticipant {
 	
 	private int id;
-
+	
 	public GamificationGroup(int id, int level, int score, String name) {
 		super(level, score, name);
 		this.id = id;
@@ -52,6 +44,14 @@ public class GamificationGroup extends GamificationParticipant {
 		map.put("score", this.score);
 		map.put("name", this.name);
 		return map;
+	}
+
+	public void deserialize(HashMap<String, Object> groups){
+		this.id = Integer.parseInt(""+groups.get("id"));
+		this.level = Integer.parseInt("" +groups.get("level"));
+		this.score = Integer.parseInt("" +groups.get("score"));
+		this.name = ""+groups.get("name");
+		
 	}
 	
 }

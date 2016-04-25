@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.containermanager.api.devices;
 
 
@@ -13,10 +5,12 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @XmlType(name = "SIUnitType")
 @XmlEnum
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum SIUnitType {
 
 	@XmlEnumValue("Celsius")
@@ -75,4 +69,23 @@ public enum SIUnitType {
 		}
 		throw new IllegalArgumentException(v);
 	}	
+
+
+	public String getType() {
+		return value;
+	}
+	
+	@JsonCreator
+	  public static SIUnitType fromString(String text) {
+		    if (text != null) {
+		      for (SIUnitType b : SIUnitType.values()) {
+		        if (text.equals(b.name())) {
+		          return b;
+		        }
+		      }
+		    }
+		    return null;
+		  }
+	
+	
 }

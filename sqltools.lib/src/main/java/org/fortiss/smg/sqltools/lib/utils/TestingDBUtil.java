@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.sqltools.lib.utils;
 
 import java.sql.Connection;
@@ -16,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -42,7 +35,7 @@ public class TestingDBUtil implements InformationBrokerInterface {
 	private String dbuserold;
 	private String dbpasswordold;
 
-	private Connection con;
+	private Connection con	;
 	private Connection conold;
 	
 	
@@ -441,5 +434,37 @@ public class TestingDBUtil implements InformationBrokerInterface {
 	public String getTable() {
 		return DBTABLE;
 		
+	}
+
+	@Override
+	public Map<Long, Double> getLastseen(String devId, String wrapperId) {
+		Map<Long, Double> result = new HashMap<Long, Double>();
+		if (checkOrOpenDBConnection()) { 
+			try {
+				PreparedStatement ps; 
+
+				ps = con.prepareStatement("SELECT timestamp , value  FROM DoubleEvents WHERE devid = ? AND wrapperid = ? ORDER BY timestamp DESC LIMIT 0,1");
+				ps.setString(1, devId); 
+				ps.setString(2,wrapperId);
+				logger.debug("PersistencyLog: DB Query " + ps.toString()); 
+				ResultSet queryResult = ps.executeQuery();
+
+				while (queryResult.next()) {  
+					result.put(queryResult.getLong("timestamp"), queryResult.getDouble("value")); 
+				} 
+				ps.close(); 
+				closeDBConnection();
+			} 
+			catch (SQLException e) { 
+				closeDBConnection();
+				e.printStackTrace();
+				logger.warn("PersistencyQuery: SQL Statement error", e); } } else {
+					logger.warn("PersistencyQuery: Could not execute Query - no DB-Connection!"); 
+				}
+		if (result.size() == 0) { 
+			logger.warn("PersistencyQuery: Requestet Object not in Database - returning null");
+		}
+		return result; 
+
 	}
 }

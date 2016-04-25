@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.solarlog.impl;
 
 import java.io.IOException;
@@ -44,11 +36,8 @@ public class ActuatorClientImpl implements IActuatorClient {
 	
 	ArrayList<DeviceContainer> devices = new ArrayList<DeviceContainer>();
 	
-	public ActuatorClientImpl(/*IActuatorMaster master, String clientId,*/
-			String host, String port,String wrapperTag, int pollFreq, String username, String password) {
+	public ActuatorClientImpl(String host, String port,String wrapperTag, int pollFreq, String username, String password) {
 	
-		/*this.master = master;
-		this.clientId = clientId;*/
 		this.host = host;
 		this.wrapperTag = wrapperTag;
 		loadStaticDevs(wrapperTag);
@@ -201,6 +190,15 @@ public class ActuatorClientImpl implements IActuatorClient {
 		solarSpecFeedInDaySum.setDeviceType(SIDeviceType.ProductionPowermeterAggregated);
 		
 
+		DeviceContainer solarSpecInventorStatus = new DeviceContainer(
+				new org.fortiss.smg.containermanager.api.devices.DeviceId(
+						"solar_inventor_status", wrapperTag), wrapperTag
+						+ ".solar");
+		
+		solarSpecInventorStatus.setHrName("Solar Inventor Status");
+		//// type should be replaced with proper SI device type . Not exist yet 
+		solarSpecInventorStatus.setDeviceType(SIDeviceType.Calculator);
+		
 		devices.add(solarSpecGenerator);
 		devices.add(solarSpecGeneratorTemp);
 		devices.add(solarSpecGeneratorVoltage);
@@ -208,7 +206,7 @@ public class ActuatorClientImpl implements IActuatorClient {
 		devices.add(solarSpecFeedIn);
 		devices.add(solarSpecFeedInTemp);
 		devices.add(solarSpecFeedInDaySum);
-		
+		devices.add(solarSpecInventorStatus);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

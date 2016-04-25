@@ -1,58 +1,124 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.solarlog.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import org.fortiss.smg.actuatormaster.api.IActuatorClient;
-import org.fortiss.smg.config.lib.Ops4JTestTime;
+import org.fortiss.smg.actuatorclient.solarlog.impl.ActuatorClientImpl;
+import org.fortiss.smg.actuatormaster.api.AbstractClient;
+import org.fortiss.smg.actuatormaster.api.ActuatorMasterQueueNames;
+import org.fortiss.smg.actuatormaster.api.IActuatorMaster;
+import org.fortiss.smg.config.lib.WrapperConfig;
+import org.fortiss.smg.remoteframework.lib.DefaultProxy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Configuration;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.OptionUtils;
-import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerMethod;
 
-@RunWith(PaxExam.class)
-@ExamReactorStrategy(PerMethod.class)
-public class TestActuatorClientSimple {
 
-	private IActuatorClient impl;
 
-	@Configuration
-	public Option[] config() {
-		// this is used to build up a default OSGi Container and inject the SMG
-		// scope
-		// add here all API-libraries of the smg project on which your api &
-		// impl depend on
-		Option[] defaultSpace = Ops4JTestTime.getOptions();
-		Option[] currentSpace = options(
-				mavenBundle("org.fortiss.smartmicrogrid",
-						"actuatormaster.api", "1.0-SNAPSHOT"),
-				mavenBundle("org.fortiss.smartmicrogrid",
-						"actuatorclient.solarlog.impl", "1.0-SNAPSHOT")
-						);
+public class TestActuatorClientSimple extends AbstractClient  {
 
-		return OptionUtils.combine(defaultSpace, currentSpace);
-	}
+	private static org.fortiss.smg.testing.MockOtherBundles mocker;
+	private ActuatorClientImpl implClient;
+	IActuatorMaster master4config = null;
+	private List<ActuatorClientImpl> clients = new ArrayList<ActuatorClientImpl>();
 
 	@Before
-	public void setUp() {
-		// impl = new ActuatorClientImpl();
+	public void setUp() throws Exception{
+		ArrayList<String> bundles = new ArrayList<String>();
+		
+		bundles.add("Ambulance");
+		bundles.add("InformationBroker");
+		bundles.add("ActuatorMaster");
+		bundles.add("ContainerManager");
+		
+		
+		try {
+			mocker = new org.fortiss.smg.testing.MockOtherBundles(bundles);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// register here your services etc.
+				// DO NOT start heavy operations here - use threads
+				/*
+				 * Try to connect to Master to get the wrapper's config file
+				 */
+				ArrayList<WrapperConfig> configList = new ArrayList<WrapperConfig>();
+
+				DefaultProxy<IActuatorMaster> proxyMaster = new DefaultProxy<IActuatorMaster>(
+						IActuatorMaster.class,
+						ActuatorMasterQueueNames.getActuatorMasterInterfaceQueue(),
+						5000);
+				try {
+					master4config = proxyMaster.init();
+				} catch (TimeoutException e) {
+					System.out.println("ActuatorClient: Unable to connect to master (Timeout).");
+				}
+
+				/*
+				 * If we have connection try to get the wrapper's config file
+				 */
+				if (master4config != null) {
+					try {
+						configList = master4config.getWrapperConfig("solarlog");
+					} catch (TimeoutException e) {
+						System.out.println("ActuatorClient: Unable to connect to master (Timeout).");
+					} finally {
+						try {
+							proxyMaster.destroy();
+						} catch (IOException e) {
+							System.out.println("Unable to close con. for queue:"
+									+ this.clientId);
+						}
+					}
+
+					/*
+					 * For each received wrapper config instance (possibly the same
+					 * wrapper is used for multiple (physical) devices
+					 */
+					if (configList.size() > 0) {
+						for (WrapperConfig config : configList) {
+
+							final String clientKey = config.getKey();
+							final String clientIDextension = config.getHost();
+
+							implClient = new ActuatorClientImpl(config.getProtocol()+"://"+config.getHost(),
+									config.getPort(), config.getWrapperID(),
+									config.getPollingfrequency(), config.getUsername(),
+									config.getPassword());
+							// Register at Actuator Master (self, human readable name
+							// for
+							// device)
+							registerAsClientAtServer(implClient,
+									config.getWrapperName(), new IOnConnectListener() {
+
+										@Override
+										public void onSuccessFullConnection() {
+											implClient.setMaster(master);
+											implClient.setClientId(clientId);
+											implClient.activate();
+											System.out.println("ActuatorClient[" + clientKey
+													+ "-" + clientIDextension
+													+ "] is alive");
+											clients.add(implClient);
+
+										}
+									});
+
+						}
+						System.out.println("Solarlog Wrapper started");
+					} else {
+						System.out.println("No Configuration available");
+					}
+				} else {
+					proxyMaster.destroy();
+					System.out.println("Solarlog Wrapper could not read config from Master");
+					//this.stop(mocker.getContext());
+				}
 	}
 
 	@After
@@ -62,6 +128,6 @@ public class TestActuatorClientSimple {
 
 	@Test(timeout = 5000)
 	public void testYourMethod() throws TimeoutException {
-		//assertEquals(true, impl.isComponentAlive());
+		assertEquals(true, implClient.isComponentAlive());
 	}
 }

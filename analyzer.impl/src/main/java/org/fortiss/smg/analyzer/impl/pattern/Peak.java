@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.analyzer.impl.pattern;
 
 import java.util.ArrayList;
@@ -86,7 +78,7 @@ public class Peak {
 		}
 		List<List<DoublePoint>> allPeaks = new ArrayList<List<DoublePoint>>();
 		List<DoublePoint> peakCandidates = new ArrayList<DoublePoint>();
-		long difference = compare.getStartDate().getTimeInMillis()
+		long difference = compare.getStartDate()
 				- interpolator.getFunctionStartTime().getTimeInMillis();
 		double[] knots = interpolator.getFunction().getKnots();
 		long filledTimeInterval = 0;

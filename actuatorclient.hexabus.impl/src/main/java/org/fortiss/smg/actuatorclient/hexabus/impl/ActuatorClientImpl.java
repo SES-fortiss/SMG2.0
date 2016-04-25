@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.actuatorclient.hexabus.impl;
 
 import java.io.IOException;
@@ -152,6 +144,8 @@ public class ActuatorClientImpl implements IActuatorClient {
 	 *            1 to turn on 0 to turn off This is being realised by calling a
 	 *            php script that runs a bash script The bash script runs on the
 	 *            server the proper command for turning the device on/off
+	 *            
+	 *            
 	 */
 	@Override
 	public void onDoubleCommand(DoubleCommand command, DeviceId dev) {

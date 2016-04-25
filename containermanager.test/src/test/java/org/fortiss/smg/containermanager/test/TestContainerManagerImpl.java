@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2011-2015, fortiss GmbH.
- * Licensed under the Apache License, Version 2.0.
- *
- * Use, modification and distribution are subject to the terms specified
- * in the accompanying license file LICENSE.txt located at the root directory
- * of this software distribution.
- */
 package org.fortiss.smg.containermanager.test;
 
 import static org.junit.Assert.assertEquals;
@@ -361,7 +353,7 @@ public class TestContainerManagerImpl {
 
 
 	@Test
-	public void testGetMinMaxByType() {
+	public void testGetMinMaxByType() throws TimeoutException {
 		Container c1 =  new Container("dummy1", "dummyHR", ContainerType.BUILDING, ContainerFunction.KITCHEN, false);
 		impl.addContainer(c1);
 		
@@ -474,7 +466,7 @@ public class TestContainerManagerImpl {
 	}
 
 	@Test
-	public void testOnDeviceEventReceivedDeviceEventDeviceIdString() {
+	public void testOnDeviceEventReceivedDeviceEventDeviceIdString() throws TimeoutException {
 		Container c1 =  new Container("dummy1", "dummyHR", ContainerType.BUILDING, ContainerFunction.KITCHEN, false);
 		impl.addContainer(c1);
 		
@@ -549,7 +541,7 @@ public class TestContainerManagerImpl {
 		dSpec.setDeviceType(SIDeviceType.Powerplug);
 		dSpec.setCommandMinRange(0);
 		dSpec.setCommandMaxRange(100);
-		dSpec.setAcceptsCommands(false);
+		dSpec.setAcceptsCommands(true);
 		DeviceContainer devCon = new DeviceContainer(new DeviceId("dev", "dummy"), "foo",
 				dSpec);
 		
@@ -558,10 +550,18 @@ public class TestContainerManagerImpl {
 		impl.addDevContainer(devCon);
 		
 		//TODO
+		System.out.println(impl.getMaxByType(devCon.getContainerId(), SIDeviceType.Powerplug));
+		
 		impl.sendCommand(new DoubleCommand(2.0), new DeviceId("dev", "dummy"));
+
 		
 		double max = impl.getMaxByType(id, SIDeviceType.Powerplug);
-		//Assert.assertEquals(2.0, max, 0.1);
+		System.out.println(impl.getMaxByType(devCon.getContainerId(), SIDeviceType.Powerplug));
+		assertEquals(2.0, max, 0.1);
+		
+		impl.sendCommandToContainer(new DoubleCommand(1.0), id, SIDeviceType.Powerplug);
+		
+		
 	}
 	
 	@Test
