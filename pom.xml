@@ -282,6 +282,10 @@
 		<module>informationbroker.api</module>
 		<module>informationbroker.impl</module>
 		<module>informationbroker.test</module>
+		
+		<module>recommender.api</module>
+		<module>recommender.impl</module>
+		<module>recommender.test</module>
 
 		<module>containermanager.api</module>
 		<module>containermanager.impl</module>
@@ -340,6 +344,9 @@
 		<module>analyzer.impl</module>
 		<module>analyzer.test</module>
 
+                <module>epcclient.api</module>
+                <module>epcclient.impl</module>
+                <module>epcclient.test</module>
 
 		<!-- <module>prophet.api</module>
 		<module>prophet.impl</module>
@@ -367,6 +374,8 @@
 		<module>websocket.api</module>
 		<module>websocket.impl</module>
 		<module>websocket.test</module>
+
+
 
 	</modules>
 

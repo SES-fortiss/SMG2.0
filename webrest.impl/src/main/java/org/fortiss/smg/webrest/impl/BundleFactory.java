@@ -63,6 +63,8 @@ public class BundleFactory {
 						.getGamificationInterfaceQueue(), 5000);
 
 		gamification = gamificationInfo.init();
+		
+		
 
 	}
 

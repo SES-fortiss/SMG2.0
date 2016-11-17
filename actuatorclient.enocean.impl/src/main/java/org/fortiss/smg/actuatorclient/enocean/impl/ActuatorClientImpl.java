@@ -17,6 +17,7 @@ import org.fortiss.smg.actuatormaster.api.IActuatorMaster;
 import org.fortiss.smg.actuatormaster.api.events.DeviceEvent;
 import org.fortiss.smg.containermanager.api.devices.DeviceContainer;
 import org.fortiss.smg.containermanager.api.devices.DeviceId;
+import org.fortiss.smg.containermanager.api.devices.SIUnitType;
 import org.fortiss.smg.smgschemas.commands.DoubleCommand;
 import org.slf4j.LoggerFactory;
 
@@ -162,6 +163,9 @@ public class ActuatorClientImpl implements IActuatorClient {
 						valueBool = false;
 					}
 					this.looper.getActor(dev.toString()).setBoolean(valueBool, dev.toString(), 0, "", true, "");
+				} else {
+					double value = command.getValue();
+					this.looper.getActor(dev.getDevid().toString()).setDouble(value, SIUnitType.LUX, dev.toString(), 0, "", true, "");
 				}
 			}
 		}

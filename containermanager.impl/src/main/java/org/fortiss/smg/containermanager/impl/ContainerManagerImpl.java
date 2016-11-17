@@ -1,6 +1,7 @@
 package org.fortiss.smg.containermanager.impl;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -907,24 +908,42 @@ public class ContainerManagerImpl implements ContainerManagerInterface,
 	public boolean removeContainer(String containerID) {
 		/*
 		 * Update the Edges for all children and set them to this.parent
+		 * TODO: All devices to parent node delete "Bulding" structure
+		 * TODO: consider structure of building: Building must have floors, floors may have wings and rooms
+		 * TODO: when a floor is removed the substructure should be removed too
+		 * TODO: when a logical structure e.g. Wing is removed the substrcture should be kept 
+		 * 
 		 */
 		List<Entry<Container, EdgeType>> children = new ArrayList<Entry<Container, EdgeType>>();
 		children = this.getChildrenWithEdgeTypes(containerID);
+		Array[] movables = {"WING","DEVICE","DEVICEGATEWAY","UNKNOWN"};
+		
 		if (getRealParentContainer(containerID) != null) {
 			for (Entry<Container, EdgeType> entry : children) {
 				if (entry.getValue().equals(EdgeType.REAL)) {
-
-					logger.debug("updating (real) edge from children to parent of "
+					String containerType = entry.getKey().getContainerType().toString();
+					if (movables.contains(entry.getKey().getContainerType().toString())) {
+						logger.debug("updating (real) edge from children to parent of "
 							+ containerID);
-					this.updateRealContainerEdgeFixedChild(
+						this.updateRealContainerEdgeFixedChild(
 							getRealParentContainer(containerID), entry.getKey()
 									.getContainerId());
+					}
+					else {
+						//TODO: Remove all children 
+					}
 				} else {
-					logger.debug("updating (virtual) edge from children to parent of "
+					String containerType = entry.getKey().getContainerType().toString();
+					if (containerType.equals("WING") || containerType.equals("DEVICE") || containerType.equals("DEVICEGATEWAY") || containerType.equals("UNKNOWN") ) {
+						logger.debug("updating (virtual) edge from children to parent of "
 							+ containerID);
-					this.updateVirtualContainerEdgeFixedChild(containerID,
+						this.updateVirtualContainerEdgeFixedChild(containerID,
 							getRealParentContainer(containerID), entry.getKey()
 									.getContainerId());
+					}
+					else {
+						//TODO: Remove all children 
+					}
 				}
 			}
 		}

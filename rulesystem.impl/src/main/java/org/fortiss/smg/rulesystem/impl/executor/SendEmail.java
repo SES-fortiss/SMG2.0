@@ -44,7 +44,7 @@ public class SendEmail {
 				if(word.equals(s)) {
 					iter.remove();
 					bool  = false;
-					action= "Unsubscribed! You will no longer receive coffee notifications";
+					action= "Unsubscribed! You will no longer receive notifications";
 				}else {
 					tempList.add(word);
 				}
@@ -106,10 +106,10 @@ public class SendEmail {
 				message.setFrom(new InternetAddress(from));
 
 				// Set Subject: header field
-				message.setSubject("Confirmation mail");
+				message.setSubject("Notification mail");
 
 				// Now set the actual message
-				message.setText("Thanks for using the coffee notification service. ");
+				message.setText("Please don not plug in heavy devices.");
 
 				String to = s1 + "@fortiss.org";//bufferRead.readLine();
 
@@ -135,7 +135,7 @@ public class SendEmail {
 		SendEmail.logger.debug("recipients: " + recipients);
 		String to = null;
 		// Sender's email ID needs to be mentioned
-		String from = "Fortiss.Coffee@fortiss.org";
+		String from = "Fortiss.SMG@fortiss.org";
 		String host = "mail.fortiss.org";
 		// Get system properties
 		Properties properties = System.getProperties();
@@ -149,7 +149,7 @@ public class SendEmail {
 			// Set From: header field of the header.
 			message.setFrom(new InternetAddress(from));
 			// Set Subject: header field
-			message.setSubject("Localhost: Coffee is ready!");
+			message.setSubject("Please do not plug in heavy devices.");
 			// Now set the actual message
 			message.setText(" ");
 			for(Iterator<String> iter = recipients.iterator(); iter.hasNext();) {

@@ -81,7 +81,7 @@ public interface ContainerManagerInterface extends HealthCheck {
 	public String getContainerId(DeviceId id) throws TimeoutException;
 
 	/**
-	 * this method return the container according to the unique containerId
+	 * this method returns the container according to the unique containerId
 	 * if it exists or is known to the system, else null. The returned container 
 	 * could be a DeviceContainer too.
 	 * @param id
@@ -212,7 +212,8 @@ public interface ContainerManagerInterface extends HealthCheck {
 	 * returns true on success - else false
 	 */
 	public boolean addContainer(Container con) throws TimeoutException;
-	public boolean addDevContainer(DeviceContainer con);
+	public int addContainerWebUI(Container con) throws TimeoutException;
+	public boolean addDevContainer(DeviceContainer con) throws TimeoutException;
 	
 	/**
 	 * containerID (unique must exist)

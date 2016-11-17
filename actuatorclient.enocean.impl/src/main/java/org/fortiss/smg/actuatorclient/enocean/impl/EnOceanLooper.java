@@ -180,12 +180,16 @@ public void handleIncomingTelegram(UniversalTelegram telegram) {
 				
 			
 			}
+			
 		} else if (listenMode) {
 	        // handle unknown device
 	        listenedTelegrams.add(telegram.getTelegramString());
 	        synchronized (waitForListenTelegramMonitor) {
 	            waitForListenTelegramMonitor.notifyAll();
 	        }
+		}
+		else {
+			logger.debug(device.getDeviceId().toString());
 		}
     }
 }

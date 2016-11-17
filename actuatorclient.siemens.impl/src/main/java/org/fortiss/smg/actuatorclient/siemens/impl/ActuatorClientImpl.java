@@ -209,36 +209,6 @@ public class ActuatorClientImpl implements IActuatorClient {
 
 	private void loadStaticDevs(String wraperTagN) {
 		
-		/*labConSpecControlCoffeeMaker = new DeviceContainer(
-				new org.fortiss.smg.containermanager.api.devices.DeviceId(
-						"coffeemaker_plug", wraperTagN), wraperTagN
-						+ ".powerplug", SIUnitType.NONE, DeviceType.Powerplug,
-				true, true, 0, 1, 1, -1, 1, 1, "CoffeeMaker PowerPlug");
-		
-		labConSpecConsumptionCoffeeMaker = new DeviceContainer(
-				new org.fortiss.smg.containermanager.api.devices.DeviceId(
-						"coffeemaker_powermeter", wraperTagN), wraperTagN
-						+ ".powermeter", SIUnitType.W, DeviceType.Powermeter,
-				false, true, 0, Double.MAX_VALUE, 1, "CoffeeMaker Consumption [W]");
-		
-		labConSpecMultiSensorTemperature = new DeviceContainer(
-				new org.fortiss.smg.containermanager.api.devices.DeviceId(
-						"multisensor_temperature", wraperTagN), wraperTagN
-						+ ".multisensor", SIUnitType.CELSIUS,
-				DeviceType.Temperature, false, true, -50, 150, 0.1,
-				"Multisensor [C]");
-		
-		labConSpecMultiSensorBrightness = new DeviceContainer(
-				new org.fortiss.smg.containermanager.api.devices.DeviceId(
-						"multisensor_brightness", wraperTagN), wraperTagN
-						+ ".multisensor", SIUnitType.LUX, DeviceType.Brightness,
-				false, true, 0, 1000, 1, "Multisensor [LUX]");
-		
-		devices.add(labConSpecControlCoffeeMaker);
-		devices.add(labConSpecConsumptionCoffeeMaker);
-		devices.add(labConSpecMultiSensorTemperature);
-		devices.add(labConSpecMultiSensorBrightness);
-*/
 
 	}
 

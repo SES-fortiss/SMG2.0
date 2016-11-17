@@ -1,7 +1,5 @@
 package org.fortiss.smg.rulesystem.impl.executor;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -11,7 +9,6 @@ import org.fortiss.smg.actuatormaster.api.IActuatorClient;
 import org.fortiss.smg.actuatormaster.api.IActuatorListener;
 import org.fortiss.smg.actuatormaster.api.events.DeviceEvent;
 import org.fortiss.smg.actuatormaster.api.events.DoubleEvent;
-import org.fortiss.smg.containermanager.api.ContainerManagerInterface;
 import org.fortiss.smg.containermanager.api.devices.DeviceId;
 import org.fortiss.smg.informationbroker.api.IDatabase;		
 import org.fortiss.smg.rulesystem.impl.persistor.RuleSystemDBImpl;
@@ -26,6 +23,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
@@ -38,16 +36,18 @@ import org.slf4j.LoggerFactory;
 
 public class RuleSystemDroolsImpl implements RuleSystemDroolsInterface, IActuatorListener
 {
-	private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger( RuleSystemDroolsImpl.class );
+	private static org.slf4j.Logger logger = LoggerFactory.getLogger(RuleSystemDroolsImpl.class);
 	String drlResourcePath;
 	static KieSession kSession;
 	IDatabase database;
 	RuleSystemDBImpl impl;
 	IActuatorClient actuatorClient ;
 	DoubleCommand dblCommand ;
-	ContainerManagerInterface containerManagerClient;
-	Commander commander = new Commander();
+	Commander commander;
 	SendEmail mail = new SendEmail();
+	private IActuatorListener server;
+
+	Compare compare = new Compare();
 	
 	public static String drlResourcesPath = "/opt/felix/drools.drl";
 	
@@ -57,6 +57,7 @@ public class RuleSystemDroolsImpl implements RuleSystemDroolsInterface, IActuato
 				.getLogger(RuleSystemDroolsImpl.class);
 		this.database = database;
 		impl = new RuleSystemDBImpl(database);
+		commander = new Commander();
 		
 		String os = System.getProperty("os.name");
 		if (os != null && os.startsWith("Windows")) {
@@ -65,16 +66,14 @@ public class RuleSystemDroolsImpl implements RuleSystemDroolsInterface, IActuato
 		
 		kSession = createKieSession();
 		
-		/*
-		 * Setting the value of globals declared in .drl file
-		 */
+//		Setting the value of globals declared in .drl file
 		kSession.setGlobal("logger", logger);
 		kSession.setGlobal("actuatorClient", actuatorClient);
 		kSession.setGlobal("dblCommand",dblCommand );
 		kSession.setGlobal("commander", commander);
 		kSession.setGlobal("mail", mail);
+//		kSession.setGlobal("compare", compare);
 		logger.info("##############Logging works");
-		
 	}
 
 	//	private void readDrlFile() throws FileNotFoundException{
@@ -134,27 +133,22 @@ public class RuleSystemDroolsImpl implements RuleSystemDroolsInterface, IActuato
 	 * 
 	 * @return the new KieSession
 	 */
-//	public static KieSession createKieSession() {
-//		KieServices ks = KieServices.Factory.get();
-//		KieContainer kc = ks.getKieClasspathContainer();
-//		KieSession kieS = kc.newKieSession();
-//		System.out.println("returning from createKieContainer method");
-//		return kieS;
-//	}
-	
 	public static KieSession createKieSession() {
 		KieServices ks = KieServices.Factory.get();
+//		ks.getKieClasspathContainer(cl);
 		KieContainer kcontainer = createKieContainer(ks);
 
 		// Configure and create the KieBase
 		KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+		kbconf.setOption(EventProcessingOption.STREAM);
 		KieBase kbase = kcontainer.newKieBase(kbconf);
 
 		// Configure and create the KieSession
 		KieSessionConfiguration ksconf = ks.newKieSessionConfiguration();
 
 		ksconf.setOption( ClockTypeOption.get(ClockType.REALTIME_CLOCK.getId()));
-
+		ksconf.setProperty("drools.accumulate.function.compare",
+                "org.fortiss.smg.rulesystem.impl.executor.Compare");
 		logger.info("##############Logging works");
 		System.out.println("returning from createKieSession method");
 		return kbase.newKieSession(ksconf, null);
@@ -259,8 +253,7 @@ public class RuleSystemDroolsImpl implements RuleSystemDroolsInterface, IActuato
 
 
 	public static boolean removeRule(String ruleName) {
-		try{
-		
+		try{	
 			FactHandle fact = kSession.getFactHandle(ruleName);
 			kSession.delete(fact);	
 			return true;
@@ -273,17 +266,24 @@ public class RuleSystemDroolsImpl implements RuleSystemDroolsInterface, IActuato
 
 	@Override
 	public void onDoubleEventReceived(DoubleEvent ev, DeviceId dev, String client) {
-		logger.info("##############Logging is working");
-		System.out.println("RuleSystemDroolsImpl:: onDoubleEventReceived method");
+		logger.debug("##############Logging is working");
+		logger.info("RuleSystemDroolsImpl:: onDoubleEventReceived method");
+		
+//		try {
+//			commander.setDeviceValue( "30office1030light", "enocean.wrapper",  0.0);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		
 		String containerID = dev.getDevid();
 		double value = ev.getValue();
 		double maxAbsError = ev.getMaxAbsError();
 		Events eventObj = new Events (containerID, value, maxAbsError);
-		kSession.insert( eventObj);
+		kSession.insert(eventObj);
 		execute();
-//		kSession.fireAllRules();
 		System.out.println("Event value "+ ev.getValue()+ " from DeviceId " +dev.getDevid()+ " WrapperId " +dev.getWrapperId());
-
 	}
 
 	@Override

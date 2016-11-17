@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -37,7 +38,7 @@ public class TestEnocean {
 	
 	@BeforeClass
 	public static void setUpDataBase() throws SQLException,
-			ClassNotFoundException {
+			ClassNotFoundException {		
 		mocker = new MockOtherBundles();
 	}
 
@@ -82,7 +83,7 @@ public class TestEnocean {
 	@Test
 	public void testOnDeviceEventReceivedDeviceContainerString() throws InterruptedException {
 				
-		DeviceId devid = new DeviceId("31","office5070light");
+		DeviceId devid = new DeviceId("38","PowerPlug");
 		looper.setBoolean(true, devid.toString(), 0, "enocean", true);
 		Thread.sleep(1000);
 		looper.setBoolean(false, devid.toString(), 0, "enocean", true);

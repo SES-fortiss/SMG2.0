@@ -113,6 +113,7 @@ public class WrapperPersistor {
                  EnOceanCommunicator communicator;
                  if (wrapperHost.equals("USB")) {
 //                     String portIdentifier = "/dev/ttyACM0"; //wrapperHost.substring("usb:".length());
+                	 //String portIdentifier = "/dev/tty.usbserial-FTXMILC1";
                 	 String portIdentifier = "/dev/ttyUSB0";
                 	 //String portIdentifier = "COM1";
                 	 
@@ -140,8 +141,9 @@ public class WrapperPersistor {
                      if (channel == -1)
                     	 wrapper.addSensor(id+"-"+deviceCode, new Sensor(id+"-"+deviceCode, createSensorStrategy(strategyClassName, impl),deviceId, deviceCode), deviceCode);
                      else{
+                    	deviceId = new DeviceId(hrName, impl.getWrapperTag());
                     	Actor actor = new Actor(channel,createActorStrategy(strategyClassName, impl),deviceId);
-                    	//wrapper.addActor(id+"-"+deviceCode, actor, deviceCode);
+//                    	wrapper.addActor(id+"-"+deviceCode, actor, deviceCode);
                     	wrapper.addActor(hrName, actor, deviceCode);
                     	 }
                  }

@@ -63,6 +63,7 @@ public class ActuatorMasterImpl implements IActuatorMaster {
 		//executors = Executors.newFixedThreadPool(256);
 		executors = Executors.newCachedThreadPool();
 		wrapperConfigManager.setConfigPath(configpath);
+//		wrapperConfigManager.setConfigPath("/Users/sajjad/opt/felix/wrapperconfig.xml");
 	}
 
 	@Override

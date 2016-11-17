@@ -1,6 +1,7 @@
 package org.fortiss.smg.actuatorclient.dummy.impl;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.concurrent.TimeoutException;
 
 import org.fortiss.smg.actuatorclient.dummy.impl.ActuatorClientImpl;
@@ -50,24 +51,25 @@ public class DummyLooper implements Runnable {
 			/*
 			 * read values from devices (enocean)
 			 */
-//			DefaultProxy<ContainerManagerInterface> clientInfo = new DefaultProxy<ContainerManagerInterface>(
-//					ContainerManagerInterface.class,
-//					ContainerManagerQueueNames
-//							.getContainerManagerInterfaceQueryQueue(), 5000);
-//			ContainerManagerInterface containerManagerClient = null;
+			//			DefaultProxy<ContainerManagerInterface> clientInfo = new DefaultProxy<ContainerManagerInterface>(
+			//					ContainerManagerInterface.class,
+			//					ContainerManagerQueueNames
+			//							.getContainerManagerInterfaceQueryQueue(), 5000);
+			//			ContainerManagerInterface containerManagerClient = null;
 
 			try {
 				//containerManagerClient = clientInfo.init();
-				lightson = impl.containerManagerClient.getMeanByType(
+				lightson = this.impl.containerManagerClient.getMeanByType(
 						"enoceanUSB.wrapper.PowerPlug", SIDeviceType.Powerplug);
+
 				if (lightson == Double.NaN) {
 					lightson = 0.0;
 
 				}
-				logger.info("Lightstatus is " + lightson);
+				logger.debug("Lightstatus is " + lightson);
 
-//			} catch (IOException e) {
-//				e.printStackTrace();
+				//			} catch (IOException e) {
+				//				e.printStackTrace();
 			} catch (TimeoutException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -75,14 +77,13 @@ public class DummyLooper implements Runnable {
 				e.printStackTrace();
 			}
 
-//			try {
-//				clientInfo.destroy();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
+			//			try {
+			//				clientInfo.destroy();
+			//			} catch (IOException e) {
+			//				e.printStackTrace();
+			//			}
 
-			// also add a random value to generation 
-			generation = impl.generation.getStatus() + 5000*Math.random();
+			generation = impl.generation.getStatus();
 			batterypercentage = impl.getBatteryPercentage();
 
 			/*
@@ -94,10 +95,7 @@ public class DummyLooper implements Runnable {
 			 * minus PV generation 100% = 80k if in grid and battery < 100 %
 			 * 80k-100k (light on/off)
 			 */
-			
-			
-			/* Example for grid connected/disconnected
-			
+
 			if (impl.gridconnected.getStatus() == 1.0
 					&& impl.energyfrombatteryrequest.getStatus() == 0.0) {
 				if (batterypercentage == 1.0) {
@@ -107,7 +105,7 @@ public class DummyLooper implements Runnable {
 						consumption = consumtion_global_w_light;
 					}
 				} else {
-					
+
 					if ((impl.getBattery() + chargerate)
 							/ impl.batterycapacitymax > 1.0) {
 						chargerate = impl.batterycapacitymax
@@ -133,15 +131,15 @@ public class DummyLooper implements Runnable {
 				}
 				else {
 					impl.energyfrombatteryrequest.setStatus(0.0);
-					
+
 				}
 
 			} else if (impl.gridconnected.getStatus() == 0.0) {
-				
-//				  not in grid connected mode
-//				  
-//				  energy requests are not allowed
-				 
+				/*
+				 * not in grid connected mode
+				 * 
+				 * energy requests are not allowed
+				 */
 
 				impl.energyfrombatteryrequest.setStatus(0.0);
 
@@ -152,9 +150,9 @@ public class DummyLooper implements Runnable {
 				}
 
 				if (consumption <= impl.getBattery() ) {
-//					
-//					  Switch off light
-//					 
+					/*
+					 * Switch off light
+					 */
 					impl.setBattery(impl.getBattery() - consumption/8.0);
 					batterypercentage = impl.getBattery()
 							/ impl.batterycapacitymax;
@@ -171,24 +169,112 @@ public class DummyLooper implements Runnable {
 				}
 
 			}
-			*/
-			//here we add a random value to the consumption
-			double consumptionVariance = Math.random()*10000;
-			
-		
-			/*
-			 * Energy from Array
-			 */
-			double[] arrayEnergy = impl.getEnergyvalues();
-			
-			consumption = consumption - consumptionVariance;			
-			
-			if (lightson == 0.0) {
-				consumption = (arrayEnergy[0]/4.0)-540;
-			} else {
-				consumption = arrayEnergy[0]/4.0;
-			}
-			
+
+
+			double tempval = 4 + (int)(Math.random() * ((8 - 4) + 1));
+			//			double tempval = 5;
+			impl.setGridConnected(tempval);
+			origin = impl.getDeviceSpecs().get(5).getDeviceId();
+			ev = new DoubleEvent(tempval);
+			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			logger.info("Outside temprature is "+ tempval +" Celcius");
+
+//			tempval = 10 + (int)(Math.random() * ((25 - 10) + 1));
+			tempval = 17;
+			impl.setGridConnected(tempval);
+			origin = impl.getDeviceSpecs().get(8).getDeviceId();
+			ev = new DoubleEvent(tempval);
+			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			logger.info("Inside temprature is"+ tempval+" Celcius!");
+
+			//			impl.setGridConnected(0.0);
+			//			origin = impl.getDeviceSpecs().get(7).getDeviceId();
+			//			ev = new DoubleEvent(0.0);
+			//			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			//			logger.info("Window is open!");
+
+			double brightVal = 100 + (int)(Math.random() * ((5000 - 100) + 1));
+			//			double brightVal = 120.0;
+			impl.setGridConnected(brightVal);
+			origin = impl.getDeviceSpecs().get(12).getDeviceId();
+			ev = new DoubleEvent(brightVal);
+			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			logger.info("Inside is dark"+ brightVal);
+
+
+			brightVal = 50 + (int)(Math.random() * ((10000 - 50) + 1));
+			//			brightVal = 1500.0;
+			impl.setGridConnected(brightVal);
+			origin = impl.getDeviceSpecs().get(6).getDeviceId();
+			ev = new DoubleEvent(brightVal);
+			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			logger.info("Sunny day " + brightVal);
+
+			Random generator = new Random(); 
+			int blind = generator.nextInt(3) + 1;
+			int status[] = {0,25,50,75,100};
+			impl.setGridConnected(status[blind]);
+			origin = impl.getDeviceSpecs().get(9).getDeviceId();
+			ev = new DoubleEvent(status[blind]);
+			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			//			Random generator = new Random(); 
+			//			impl.setGridConnected(1.0);
+			//			origin = impl.getDeviceSpecs().get(9).getDeviceId();
+			//			ev = new DoubleEvent(1.0);
+			//			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			logger.info("Blinds "+ status[blind] );
+
+
+			generator = new Random(); 
+			int i = generator.nextInt(1) + 1;
+			int statusb[] = {0,1};
+
+			impl.setGridConnected(statusb[i]);
+			origin = impl.getDeviceSpecs().get(10).getDeviceId();
+			ev = new DoubleEvent(statusb[i]);
+			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			logger.info("Light "+ statusb[i]);
+
+//			i = generator.nextInt(1) + 1;
+			impl.setGridConnected(1);
+			origin = impl.getDeviceSpecs().get(11).getDeviceId();
+			ev = new DoubleEvent(1);
+			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			logger.info("Occupancy "+ 1);
+
+			i = generator.nextInt(1) + 1;
+			impl.setGridConnected(statusb[i]);
+			origin = impl.getDeviceSpecs().get(7).getDeviceId();
+			ev = new DoubleEvent(statusb[i]);
+			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			logger.info("Window "+ statusb[i]);
+
+			//			impl.setGridConnected(1.0);
+			//			origin = impl.getDeviceSpecs().get(10).getDeviceId();
+			//			ev = new DoubleEvent(1.0);
+			//			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			////			logger.info("DummyDevice: run(): getEventHandler - new Event from " + 
+			////					origin + " value " + 1.0);
+			//			logger.info("Light is on!");
+
+			//			impl.setGridConnected(0.0);
+			//			origin = impl.getDeviceSpecs().get(11).getDeviceId();
+			//			ev = new DoubleEvent(0.0);
+			//			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			//
+			//			logger.info("No one is in the room!");
+
+
+
+
+			double gridconnected = Math.round(Math.random());
+			impl.setGridConnected(gridconnected);
+			origin = impl.getDeviceSpecs().get(3).getDeviceId();
+			ev = new DoubleEvent(gridconnected);
+			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
+			logger.info("DummyDevice: run(): getEventHandler - new Event from " + 
+					origin + " value " + gridconnected);
+
 			impl.setConsumption(consumption);
 			origin = impl.getDeviceSpecs().get(0).getDeviceId();
 			if (impl.gridconnected.getStatus() == 0.0) {
@@ -198,45 +284,21 @@ public class DummyLooper implements Runnable {
 			}
 			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
 			logger.info("DummyDevice: run(): getEventHandler - new Event from "
-					+ origin + " value (c) " + consumption);
+					+ origin + " value " + consumption);
 
-			//impl.setGeneration(generation);
+			generation = Math.round(Math.random());
+			impl.setGeneration(generation);
 			origin = impl.getDeviceSpecs().get(1).getDeviceId();
-			/* Grid example
 			if (impl.gridconnected.getStatus() == 0.0) {
 				ev = new DoubleEvent(0.0);
 			} else {
 				ev = new DoubleEvent(generation);
 			}
-			*/
-			generation = (arrayEnergy[1]/4.0)*4.5;
-			ev = new DoubleEvent(generation);
 			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
 			logger.info("DummyDevice: run(): getEventHandler - new Event from "
-					+ origin + " value (g) " + generation);
+					+ origin + " value " + generation);
 
-			batterypercentage = batterypercentage + (generation/100 - consumption/100);
-			logger.debug("Battery : " + batterypercentage);
-			
-			
-			if (batterypercentage > 250) {
-				batterypercentage = 250;
-			}
-			else if (batterypercentage < 0) {
-				batterypercentage = 0;
-			}
-			else {
-				
-			}
-				
-			if ( 80 > batterypercentage  && lightson == 1.0) {
-				lightOff();
-			}
-			
-			
 			impl.setBatteryPercentage(batterypercentage);
-			
-			
 			origin = impl.getDeviceSpecs().get(2).getDeviceId();
 			ev = new DoubleEvent(batterypercentage * 100.0);
 			impl.getMaster().sendDoubleEvent(ev, origin, impl.getClientId());
@@ -249,11 +311,11 @@ public class DummyLooper implements Runnable {
 	}
 
 	private void lightOff() {
-//		DefaultProxy<ContainerManagerInterface> clientInfo = new DefaultProxy<ContainerManagerInterface>(
-//				ContainerManagerInterface.class,
-//				ContainerManagerQueueNames
-//						.getContainerManagerInterfaceQueryQueue(), 5000);
-//		ContainerManagerInterface containerManagerClient = null;
+		//		DefaultProxy<ContainerManagerInterface> clientInfo = new DefaultProxy<ContainerManagerInterface>(
+		//				ContainerManagerInterface.class,
+		//				ContainerManagerQueueNames
+		//						.getContainerManagerInterfaceQueryQueue(), 5000);
+		//		ContainerManagerInterface containerManagerClient = null;
 
 		try {
 			//containerManagerClient = clientInfo.init();
@@ -266,8 +328,8 @@ public class DummyLooper implements Runnable {
 			}
 			logger.debug("Lightstatus is " + lightson);
 
-//		} catch (IOException e) {
-//			e.printStackTrace();
+			//		} catch (IOException e) {
+			//			e.printStackTrace();
 		} catch (TimeoutException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -275,11 +337,11 @@ public class DummyLooper implements Runnable {
 			e.printStackTrace();
 		}
 
-//		try {
-//			clientInfo.destroy();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		//		try {
+		//			clientInfo.destroy();
+		//		} catch (IOException e) {
+		//			e.printStackTrace();
+		//		}
 
 	}
 }

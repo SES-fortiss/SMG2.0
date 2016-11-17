@@ -26,11 +26,14 @@ public class RuleParserImpl {
 	static final String noLoop = "no-loop";
 	static final String agendaGroup = "agenda-group";
 	static final String ruleCondition = "ruleCondition";
+	static String xmlResourcesPath = "/opt/felix/rules.xml";
 
 	public RuleParserImpl() {
-		String fileName = System.getProperty("user.home") +"/Projects/SMG_GIT/smg2/rulesystem.impl/src/main/resources/rules.xml";
-		List<Rule> ruleList = parseXML(fileName);
-
+		String os = System.getProperty("os.name");
+		if (os != null && os.startsWith("Windows")) {
+			xmlResourcesPath = "c:/opt/felix/rules.xml";
+		}
+		List<Rule> ruleList = parseXML(xmlResourcesPath);
 	}	
 	/**
 	 * @param fileName
@@ -42,7 +45,7 @@ public class RuleParserImpl {
 	
 		XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 		try {
-			XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(new FileInputStream(fileName));
+			XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(new FileInputStream(xmlResourcesPath));
 			while(xmlEventReader.hasNext()){
 				XMLEvent xmlEvent = xmlEventReader.nextEvent();
 				if (xmlEvent.isStartElement()){

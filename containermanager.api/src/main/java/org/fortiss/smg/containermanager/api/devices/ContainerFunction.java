@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @JsonFormat(shape=JsonFormat.Shape.OBJECT)
 public enum ContainerFunction {
 	OFFICE("Office"), CONFERENCE("Conference"), KITCHEN("Kitchen"), TOILETTE("Toilette"), PUBLIC("Public"), ROOT("Root"), WING("Wing"), UTILITY("Utility"), NONE("None");
-	
+	/* Delete Wind */
 	private String value;
 
 	ContainerFunction(String s) {

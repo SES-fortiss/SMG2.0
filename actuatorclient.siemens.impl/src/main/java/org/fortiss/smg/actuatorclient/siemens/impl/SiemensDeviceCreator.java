@@ -222,7 +222,20 @@ import ch.iec._61400.ews._1_0.ServicePortType;
 							logger.debug("Siemens Device Creator: Device Container Added {}: {}", measurementsname,
 									((TBasicType) tdat).getFloat32());
 						}
-						
+						else if (measurementsname.contains(".VA.phs")) {
+							devID = new DeviceId(measurementsname, impl.getWrapperTag());
+							container = new DeviceContainer(devID, impl.getWrapperTag()
+								+ ".voltamperemeter");
+							
+							container.setRange(0,Double.MAX_VALUE, 0.001);
+							container.setHrName("VoltAmpere [VA]");
+							container.setDeviceType(SIDeviceType.ConsumptionVoltAmperemeter);
+							
+							
+							devices.put(measurementsname, container);
+							logger.debug("Siemens Device Creator: Device Container Added {}: {}", measurementsname,
+									((TBasicType) tdat).getFloat32());
+						}
 						
 						
 						if (container != null) {

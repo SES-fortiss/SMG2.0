@@ -167,17 +167,18 @@ public class USBStickCommunicator  extends Thread implements EnOceanCommunicator
 			telegramToSend = new ESP3Telegram(telegram);
 		}
 			logger.debug(telegramToSend.toString());
-		logger.debug("Sending {}",StringByteUtils.byteCharsToHexString(telegramToSend.getTelegramBytes()));
+		logger.info("Sending {}",StringByteUtils.byteCharsToHexString(telegramToSend.getTelegramBytes()));
 
 		try 
 		{
 			for (char b : telegramToSend.getTelegramBytes()) {
-				logger.debug("out: "+StringByteUtils.byteCharToHexString(b));
+				logger.info("out: "+StringByteUtils.byteCharToHexString(b));
 				out.write(b);
 			}
 			out.flush();
-			/*for (char b : StringByteUtils.readBytes("55000707017AF630001B10963003FFFFFFFFFF00F1")) {
-				logger.debug("out: "+StringByteUtils.byteCharToHexString(b));
+			/*
+			for (char b : StringByteUtils.readBytes("55000707017AF630001B10963003FFFFFFFFFF00F1")) {
+				logger.info("out: "+StringByteUtils.byteCharToHexString(b));
 				out.write(b);
 			}*/
 

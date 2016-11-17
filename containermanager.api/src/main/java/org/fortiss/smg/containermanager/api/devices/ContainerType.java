@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ContainerType {	
-	COMPLEX, FLOOR, ROOM, BUILDING, DEVICE, DEVICEGATEWAY, UNKNOWN;
+	COMPLEX, FLOOR, WING, ROOM, BUILDING, DEVICE, DEVICEGATEWAY, UNKNOWN;
 	
 	
 	public static ContainerType fromSting(String x) {

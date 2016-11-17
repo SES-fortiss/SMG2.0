@@ -9,7 +9,10 @@ public enum SIDeviceType {
 	FeedPowerMeter(SIUnitType.W), ConsumptionVoltmeter(SIUnitType.V), 
 	ProductionVoltmeter(SIUnitType.V), FeedVoltmeter(SIUnitType.V), 
 	FeedAmperemeter(SIUnitType.A), ConsumptionAmperemeter(SIUnitType.A), 
-	ProductionAmperemeter(SIUnitType.A), ConsumptionPowermeterAggregated(SIUnitType.WH), 
+	ProductionAmperemeter(SIUnitType.A), 
+	FeedVoltAmperemeter(SIUnitType.VA), ConsumptionVoltAmperemeter(SIUnitType.VA), 
+	ProductionVoltAmperemeter(SIUnitType.VA),
+	ConsumptionPowermeterAggregated(SIUnitType.WH), 
 	ProductionPowermeterAggregated(SIUnitType.WH), FeedPowerMeterAggregated(SIUnitType.WH), 
 	//Light(SIUnitType.LUX), same as brightness (Google uses: light) 
 	Brightness(SIUnitType.LUX),  
