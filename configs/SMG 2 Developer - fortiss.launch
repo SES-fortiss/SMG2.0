@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
+<booleanAttribute key="append.args" value="true"/>
+<booleanAttribute key="automaticAdd" value="true"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="false"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/SMG 2 Developer - fortiss"/>
+<booleanAttribute key="default" value="true"/>
+<booleanAttribute key="default_auto_start" value="true"/>
+<intAttribute key="default_start_level" value="3"/>
+<stringAttribute key="deselected_workspace_plugins" value="actuatorclient.enocean.impl,actuatorclient.froeschl.impl,actuatorclient.hexabus.impl,actuatorclient.ipswitch.impl,actuatorclient.labcon.impl,actuatorclient.siemens.impl,actuatorclient.solarlog.impl,actuatorclient.sunny.impl,postman.api,postman.impl,rulesystem.api,rulesystem.impl,websocket.api,websocket.impl"/>
+<booleanAttribute key="includeOptional" value="true"/>
+<booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true &#10;-Dosgi.noShutdown=true&#10;-Doldsql.loc=mysql://localhost:3306/fortiss&#10;-Dsql.loc=mysql://localhost:3306/fortiss2&#10;-Dsql.user=fortiss&#10;-Dsql.pass=foo&#10;-Dlog4j.configuration=file:///####################/SMG2.0/configs/logging.cfg&#10;-Djava.library.path=/usr/lib64/rxtx-2/&#10;-Dgnu.io.rxtx.SerialPorts=/dev/ttyUSB0&#10;-Dwrapperconfig:///####################/wrapperconfig.xml&#10;-Dsun.io.serialization.extendedDebugInfo=true"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<booleanAttribute key="show_selected_only" value="false"/>
+<stringAttribute key="target_bundles" value="org.apache.felix.gogo.command@default:default,org.apache.felix.gogo.runtime@default:default,org.apache.felix.gogo.shell@default:default,org.eclipse.equinox.console@default:default,org.eclipse.osgi.services@default:default,org.eclipse.osgi@-1:true"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<stringAttribute key="workspace_bundles" value="actuatorclient.dummy.impl@6:default,actuatormaster.api@2:default,actuatormaster.impl@3:default,ambulance.api@1:default,ambulance.impl@1:default,analyzer.api@5:default,analyzer.impl@6:default,config.lib@1:default,containermanager.api@3:default,containermanager.impl@4:default,gamification.api@5:default,gamification.impl@6:default,informationbroker.api@2:default,informationbroker.impl@3:default,remoteframework.lib@1:default,smg.schemas@1:default,sqltools.lib@1:default,usermanager.api@3:default,usermanager.impl@4:default,webrest.api@5:default,webrest.impl@6:default"/>
+</launchConfiguration>
