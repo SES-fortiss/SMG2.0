@@ -916,13 +916,13 @@ public class ContainerManagerImpl implements ContainerManagerInterface,
 		 */
 		List<Entry<Container, EdgeType>> children = new ArrayList<Entry<Container, EdgeType>>();
 		children = this.getChildrenWithEdgeTypes(containerID);
-		Array[] movables = {"WING","DEVICE","DEVICEGATEWAY","UNKNOWN"};
+		List movables = Arrays.asList("WING","DEVICE","DEVICEGATEWAY","UNKNOWN");
 		
 		if (getRealParentContainer(containerID) != null) {
 			for (Entry<Container, EdgeType> entry : children) {
 				if (entry.getValue().equals(EdgeType.REAL)) {
 					String containerType = entry.getKey().getContainerType().toString();
-					if (movables.contains(entry.getKey().getContainerType().toString())) {
+					if (movables.contains(containerType)) {
 						logger.debug("updating (real) edge from children to parent of "
 							+ containerID);
 						this.updateRealContainerEdgeFixedChild(
@@ -1326,5 +1326,11 @@ public class ContainerManagerImpl implements ContainerManagerInterface,
 			
 		}
 		return reasonable;
+	}
+
+	@Override
+	public int addContainerWebUI(Container con) throws TimeoutException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
